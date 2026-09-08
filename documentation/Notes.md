@@ -1,0 +1,1 @@
+Any notes and text files are edited using Obsidian.md, which means any pushes related to it have a "Vault backup" note.
