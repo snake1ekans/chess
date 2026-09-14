@@ -25,6 +25,9 @@ public class ChessPiece {
         PAWN
     }
 
+    private ChessPosition position;
+
+
     /**
      * @return Which team this chess piece belongs to
      */

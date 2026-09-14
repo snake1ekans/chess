@@ -13,12 +13,17 @@ public class ChessGame {
     public ChessGame() {
 
     }
+    private int numMoves = 0;
 
     /**
      * @return Which team's turn it is
      */
-    public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+    public TeamColor getTeamTurn() { //#todo check to see if these need to be flipped when more logic has been implemented
+        if (numMoves % 2 == 1) {
+            return TeamColor.BLACK;
+        } else {
+            return TeamColor.WHITE;
+        }
     }
 
     /**
