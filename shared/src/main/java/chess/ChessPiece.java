@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Vector;
 
 /**
  * Represents a single chess piece
@@ -12,6 +13,8 @@ import java.util.Objects;
 public class ChessPiece {
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        final ChessGame.TeamColor team = pieceColor;
+        final ChessPiece.PieceType p_type = type;
     }
 
     /**
@@ -27,23 +30,21 @@ public class ChessPiece {
     }
 
     private ChessPosition position;
-    private ChessGame.TeamColor team = pieceColor;
-    private PieceType type = type; //getting this figured out
-    private bool doubleMoved = false;
+    private boolean doubleMoved = false;
 
 
     /**
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        return team;
+        return ChessPiece.team;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        return type;
+        return p_type;
     }
 
     /**
@@ -54,66 +55,58 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        private vector<vector<int>> validMoves;
+        Vector<Vector<Integer>> validMoves;
 
         throw new RuntimeException("Not implemented");
     }
 
-    private pawnMove(validMoves) { //there's gotta be an easier way to do this team differentiation
-
-        if (this.team == WHITE) {
-            if (position.getrow()==2) { //todo check index, could be 1, don't remember if internally indexed as 1 or 0
-                validMoves.add([position.getColumn()])
-            } 
-        
-                
-
-        }
-        if (team == BLACK) {
-
-
-        }
+    private Vector<Vector<Integer>> pawnMove(Vector<Vector<Integer>> validMoves) { //there's gotta be an easier way to do this team differentiation
+        return validMoves;
     }
-    private queenMove(validMoves) {
+
+    private Vector<Vector<Integer>>  queenMove(Vector<Vector<Integer>> validMoves) {
         rookMove(validMoves);
 
+        return validMoves;
     }
 
-    private rookMove(validMoves) {
-        //todos: fix pseudocode for capture logic, check loops for internal indexing 
+    private Vector<Vector<Integer>> rookMove(Vector<Vector<Integer>> validMoves) {
+        //todo fix pseudocode for capture logic, check loops for internal indexing
+
         // valid moving column toward 0
         for (int i=position.getColumn(); i>0; i--) { 
-            validMoves.add([position.getRow(),i])
+            validMoves.add([position.getRow(),i]);
             if (piece in way) {break;}
         }
         //valid moving column toward 8
         for (int i=position.getColumn(); i<8; i++) { 
-            validMoves.add([position.getRow(),i])
+            validMoves.add([position.getRow(),i]);
             if (piece in way) {break;}
         }
         //valid moving row toward 0
         for (int i=position.getRow(); i>0; i--) { 
-            validMoves.add([i, position.getColumn()])
+            validMoves.add([i, position.getColumn()]);
             if (piece in way) {break;}
         }
         //valid moving row toward 8
         for (int i=position.getRow(); i<8; i++) { 
-            validMoves.add([i, position.getColumn()])
+            validMoves.add([i, position.getColumn()]);
             if (piece in way) {break;}
         }
+        return validMoves;
     }
 
-    private bishopMove(validMoves) {
+    private Vector<Vector<Integer>> bishopMove(Vector<Vector<Integer>> validMoves) {
         
         
 
-
+        return validMoves;
     }
 
-    private knightMove(validMoves) { 
+    private Vector<Vector<Integer>> knightMove(Vector<Vector<Integer>> validMoves) {
         //todo index checks!!!!
-        row = position.getRow();
-        col = position.getColumn();
+        int row = position.getRow();
+        int col = position.getColumn();
 
         if(col-2>0) { //move down
             if (row-1>0) {validMoves.add([row-1, col-2]);}
@@ -134,18 +127,4 @@ public class ChessPiece {
 
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ChessPiece that = (ChessPiece) o;
-        return Objects.equals(position, that.position) && team == that.team && type == that.type;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(position, team, type);
-    }
 }
