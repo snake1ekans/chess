@@ -105,8 +105,32 @@ public class ChessPiece {
 
     private bishopMove(validMoves) {
         
-        while()
+        
 
+
+    }
+
+    private knightMove(validMoves) { 
+        //todo index checks!!!!
+        row = position.getRow();
+        col = position.getColumn();
+
+        if(col-2>0) { //move down
+            if (row-1>0) {validMoves.add([row-1, col-2]);}
+            if (row+1<8) {validMoves.add([row+1, col-2]);}
+        }
+        if(col+2<8) { //move up
+            if(row-1>0) {validMoves.add([row-1, col+2]);}
+            if(row+1<8) {validMoves.add([row+1, col+2]);}
+        }
+        if(row-2>0) { //move left
+            if(col-1>0){validMoves.add([row-2, col-1])}
+            if(col+1<8){validMoves.add([row-2, col+1])}
+        }
+        if(row+2<8) { //move right
+            if(col-1>0){validMoves.add([row+2, col-1])}
+            if(col+1<8){validMoves.add([row+2, col+1])}
+        }
 
     }
 
