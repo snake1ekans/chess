@@ -29,6 +29,7 @@ public class ChessPiece {
     private ChessPosition position;
     private ChessGame.TeamColor team = pieceColor;
     private PieceType type = type; //getting this figured out
+    private bool doubleMoved = false;
 
 
     /**
@@ -53,8 +54,62 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        private vector<vector<int>> validMoves;
+
         throw new RuntimeException("Not implemented");
     }
+
+    private pawnMove(validMoves) { //there's gotta be an easier way to do this team differentiation
+
+        if (this.team == WHITE) {
+            if (position.getrow()==2) { //todo check index, could be 1, don't remember if internally indexed as 1 or 0
+                validMoves.add([position.getColumn()])
+            } 
+        
+                
+
+        }
+        if (team == BLACK) {
+
+
+        }
+    }
+    private queenMove(validMoves) {
+        rookMove(validMoves);
+
+    }
+
+    private rookMove(validMoves) {
+        //todos: fix pseudocode for capture logic, check loops for internal indexing 
+        // valid moving column toward 0
+        for (int i=position.getColumn(); i>0; i--) { 
+            validMoves.add([position.getRow(),i])
+            if (piece in way) {break;}
+        }
+        //valid moving column toward 8
+        for (int i=position.getColumn(); i<8; i++) { 
+            validMoves.add([position.getRow(),i])
+            if (piece in way) {break;}
+        }
+        //valid moving row toward 0
+        for (int i=position.getRow(); i>0; i--) { 
+            validMoves.add([i, position.getColumn()])
+            if (piece in way) {break;}
+        }
+        //valid moving row toward 8
+        for (int i=position.getRow(); i<8; i++) { 
+            validMoves.add([i, position.getColumn()])
+            if (piece in way) {break;}
+        }
+    }
+
+    private bishopMove(validMoves) {
+        
+        while()
+
+
+    }
+
 
     @Override
     public boolean equals(Object o) {
