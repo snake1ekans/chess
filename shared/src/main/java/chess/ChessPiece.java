@@ -27,8 +27,8 @@ public class ChessPiece {
     }
 
     private ChessPosition position;
-    private ChessGame.TeamColor team;
-    private PieceType type;
+    private ChessGame.TeamColor team = pieceColor;
+    private PieceType type = type; //getting this figured out
 
 
     /**
