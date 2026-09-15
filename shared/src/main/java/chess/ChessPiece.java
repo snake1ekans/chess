@@ -58,14 +58,20 @@ public class ChessPiece {
         return validMoves;
     }
 
+    private List<ChessMove> kingMove(List<ChessMove> validMoves) {
+        int row = position.getRow();
+        int col = position.getColumn();
+
+        if (row-1)
+    }
 
     private List<ChessMove> knightMove(List<ChessMove> validMoves) {
-        //todo index checks!!!!
+        //todo same-team collisions
         int row = position.getRow();
         int col = position.getColumn();
 
         if(col-2>0) { //move down
-            if (row-1>0 && ) {validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), PieceType.KNIGHT));}
+            if (row-1>0 ) {validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), PieceType.KNIGHT));}
             if (row+1<=8) {validMoves.add(new ChessMove(position, new ChessPosition(row+1, col-2), PieceType.KNIGHT));}
         }
         if(col+2<8) { //move up
