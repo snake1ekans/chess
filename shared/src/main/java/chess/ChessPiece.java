@@ -15,6 +15,7 @@ public class ChessPiece {
         final ChessPiece.PieceType p_type = type;
     }
 
+    private ChessPosition position;
     /**
      * The various different chess piece options
      */
@@ -51,8 +52,9 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         List<ChessMove> validMoves = new ArrayList<ChessMove>();
-
-
+            ChessPiece piece = board.getPiece(myPosition);
+            if (piece.getPieceType() == PieceType.KNIGHT) {return knightMove(validMoves);}
+//todo write the rest of the piece logic
         return validMoves;
     }
 
@@ -63,22 +65,35 @@ public class ChessPiece {
         int col = position.getColumn();
 
         if(col-2>0) { //move down
-            if (row-1>0) {validMoves.add([row-1, col-2]);}
-            if (row+1<8) {validMoves.add([row+1, col-2]);}
+            if (row-1>0 && ) {validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), PieceType.KNIGHT));}
+            if (row+1<=8) {validMoves.add(new ChessMove(position, new ChessPosition(row+1, col-2), PieceType.KNIGHT));}
         }
         if(col+2<8) { //move up
-            if(row-1>0) {validMoves.add([row-1, col+2]);}
-            if(row+1<8) {validMoves.add([row+1, col+2]);}
+            if(row-1>0) {validMoves.add(new ChessMove(position, new ChessPosition(row-1, col+2), PieceType.KNIGHT));}
+            if(row+1<=8) {validMoves.add(new ChessMove(position, new ChessPosition(row+1, col+2), PieceType.KNIGHT));}
         }
         if(row-2>0) { //move left
-            if(col-1>0){validMoves.add([row-2, col-1])}
-            if(col+1<8){validMoves.add([row-2, col+1])}
+            if(col-1>0){validMoves.add(new ChessMove(position, new ChessPosition(row-2, col-1), PieceType.KNIGHT));}
+            if(col+1<=8){validMoves.add(new ChessMove(position, new ChessPosition(row-2, col+1), PieceType.KNIGHT));}
         }
         if(row+2<8) { //move right
-            if(col-1>0){validMoves.add([row+2, col-1])}
-            if(col+1<8){validMoves.add([row+2, col+1])}
+            if(col-1>0){validMoves.add(new ChessMove(position, new ChessPosition(row+2, col-1), PieceType.KNIGHT));}
+            if(col+1<=8){validMoves.add(new ChessMove(position, new ChessPosition(row+2, col+1), PieceType.KNIGHT));}
         }
     return validMoves;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece that = (ChessPiece) o;
+        return Objects.equals(position, that.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(position);
+    }
 }
