@@ -187,6 +187,10 @@
   },
   "active": "4d8908ad47574225",
   "lastOpenFiles": [
+    "out/production/shared/chess/ChessPiece.class",
+    "out/production/shared/chess/ChessPiece$PieceType.class",
+    "out/production/shared/chess/ChessMove.class",
+    "out/production/shared/chess/ChessBoard.class",
     "documentation/Notes.md",
     "piece.java",
     "board.java",
