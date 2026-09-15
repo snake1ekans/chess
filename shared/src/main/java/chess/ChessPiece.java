@@ -55,7 +55,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Vector<Vector<Integer>> validMoves;
+
 
         throw new RuntimeException("Not implemented");
     }
@@ -71,33 +71,10 @@ public class ChessPiece {
     }
 
     private Vector<Vector<Integer>> rookMove(Vector<Vector<Integer>> validMoves) {
-        //todo fix pseudocode for capture logic, check loops for internal indexing
-
-        // valid moving column toward 0
-        for (int i=position.getColumn(); i>0; i--) { 
-            validMoves.add([position.getRow(),i]);
-            if (piece in way) {break;}
-        }
-        //valid moving column toward 8
-        for (int i=position.getColumn(); i<8; i++) { 
-            validMoves.add([position.getRow(),i]);
-            if (piece in way) {break;}
-        }
-        //valid moving row toward 0
-        for (int i=position.getRow(); i>0; i--) { 
-            validMoves.add([i, position.getColumn()]);
-            if (piece in way) {break;}
-        }
-        //valid moving row toward 8
-        for (int i=position.getRow(); i<8; i++) { 
-            validMoves.add([i, position.getColumn()]);
-            if (piece in way) {break;}
-        }
-        return validMoves;
     }
 
     private Vector<Vector<Integer>> bishopMove(Vector<Vector<Integer>> validMoves) {
-        
+
         
 
         return validMoves;
