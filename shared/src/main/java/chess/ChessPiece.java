@@ -1,8 +1,6 @@
 package chess;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Represents a single chess piece
@@ -28,23 +26,20 @@ public class ChessPiece {
         ROOK,
         PAWN
     }
-
-    private ChessPosition position;
-    private boolean doubleMoved = false;
-
-
     /**
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        return ChessPiece.team;
+        //return ChessGame.TeamColor.team;
+        return ChessGame.TeamColor.BLACK; //temp
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        return p_type;
+        //return p_type;
+        return PieceType.PAWN; //temp
     }
 
     /**
@@ -55,32 +50,14 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        List<ChessMove> validMoves = new ArrayList<ChessMove>();
 
-
-        throw new RuntimeException("Not implemented");
-    }
-
-    private Vector<Vector<Integer>> pawnMove(Vector<Vector<Integer>> validMoves) { //there's gotta be an easier way to do this team differentiation
-        return validMoves;
-    }
-
-    private Vector<Vector<Integer>>  queenMove(Vector<Vector<Integer>> validMoves) {
-        rookMove(validMoves);
 
         return validMoves;
     }
 
-    private Vector<Vector<Integer>> rookMove(Vector<Vector<Integer>> validMoves) {
-    }
 
-    private Vector<Vector<Integer>> bishopMove(Vector<Vector<Integer>> validMoves) {
-
-        
-
-        return validMoves;
-    }
-
-    private Vector<Vector<Integer>> knightMove(Vector<Vector<Integer>> validMoves) {
+    private List<ChessMove> knightMove(List<ChessMove> validMoves) {
         //todo index checks!!!!
         int row = position.getRow();
         int col = position.getColumn();
@@ -101,7 +78,7 @@ public class ChessPiece {
             if(col-1>0){validMoves.add([row+2, col-1])}
             if(col+1<8){validMoves.add([row+2, col+1])}
         }
-
+    return validMoves;
     }
 
 }
