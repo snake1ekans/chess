@@ -9,10 +9,11 @@ import java.util.*;
  * signature of the existing methods.
  */
 public class ChessPiece {
-
+    final ChessGame.TeamColor team;
+    final ChessPiece.PieceType type;
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        final ChessGame.TeamColor team = pieceColor;
-        final ChessPiece.PieceType p_type = type;
+        this.team = pieceColor;
+        this.type = type;
     }
 
     private ChessPosition position;
@@ -31,16 +32,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        //return ChessGame.TeamColor.team;
-        return ChessGame.TeamColor.BLACK; //temp
+        return team;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        //return p_type;
-        return PieceType.PAWN; //temp
+        return type;
     }
 
     /**
@@ -53,8 +52,9 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         List<ChessMove> validMoves = new ArrayList<ChessMove>();
             ChessPiece piece = board.getPiece(myPosition);
-            if (piece.getPieceType() == PieceType.KNIGHT) {return knightMove(validMoves);}
-//todo write the rest of the piece logic
+            if (piece.getPieceType() == PieceType.KNIGHT) {return knightMove(validMoves, board);}
+            if (piece.getPieceType() == PieceType.KING) {return kingMove(validMoves);}
+            
         return validMoves;
     }
 
@@ -62,44 +62,41 @@ public class ChessPiece {
         int row = position.getRow();
         int col = position.getColumn();
 
-        if (row-1)
+
+        return validMoves;
     }
 
-    private List<ChessMove> knightMove(List<ChessMove> validMoves) {
+    private List<ChessMove> knightMove(List<ChessMove> validMoves, ChessBoard board) {
         //todo same-team collisions
         int row = position.getRow();
         int col = position.getColumn();
 
         if(col-2>0) { //move down
-            if (row-1>0 ) {validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), PieceType.KNIGHT));}
-            if (row+1<=8) {validMoves.add(new ChessMove(position, new ChessPosition(row+1, col-2), PieceType.KNIGHT));}
+
+            if (row-1>0 && board.getPiece(new ChessPosition(row-1, col-2)).team != this.team) {
+                validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), null));}
+            if (row+1<=8 && board.getPiece(new ChessPosition(row+1, col-2)).team != this.team) {
+                validMoves.add(new ChessMove(position, new ChessPosition(row+1, col-2), null));}
         }
         if(col+2<8) { //move up
-            if(row-1>0) {validMoves.add(new ChessMove(position, new ChessPosition(row-1, col+2), PieceType.KNIGHT));}
-            if(row+1<=8) {validMoves.add(new ChessMove(position, new ChessPosition(row+1, col+2), PieceType.KNIGHT));}
+            if (row-1>0 && board.getPiece(new ChessPosition(row-1, col-2)).team != this.team) {
+                validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), null));}
+            if (row+1<=8 && board.getPiece(new ChessPosition(row+1, col-2)).team != this.team) {
+                validMoves.add(new ChessMove(position, new ChessPosition(row+1, col-2), null));}
         }
         if(row-2>0) { //move left
-            if(col-1>0){validMoves.add(new ChessMove(position, new ChessPosition(row-2, col-1), PieceType.KNIGHT));}
-            if(col+1<=8){validMoves.add(new ChessMove(position, new ChessPosition(row-2, col+1), PieceType.KNIGHT));}
+            if(col-1>0 && board.getPiece(new ChessPosition(row-2, col-1)).team != this.team){
+                validMoves.add(new ChessMove(position, new ChessPosition(row-2, col-1), null));}
+            if(col+1<=8 && board.getPiece(new ChessPosition(row-2, col+1)).team != this.team){
+                validMoves.add(new ChessMove(position, new ChessPosition(row-2, col+1), null));}
         }
         if(row+2<8) { //move right
-            if(col-1>0){validMoves.add(new ChessMove(position, new ChessPosition(row+2, col-1), PieceType.KNIGHT));}
-            if(col+1<=8){validMoves.add(new ChessMove(position, new ChessPosition(row+2, col+1), PieceType.KNIGHT));}
+            if(col-1>0 && board.getPiece(new ChessPosition(row+2, col-1)).team != this.team){
+                validMoves.add(new ChessMove(position, new ChessPosition(row-2, col-1), null));}
+            if(col+1<=8 && board.getPiece(new ChessPosition(row+2, col+1)).team != this.team){
+                validMoves.add(new ChessMove(position, new ChessPosition(row-2, col+1), null));}
         }
     return validMoves;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ChessPiece that = (ChessPiece) o;
-        return Objects.equals(position, that.position);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(position);
-    }
 }
