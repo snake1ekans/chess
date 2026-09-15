@@ -53,16 +53,38 @@ public class ChessPiece {
         List<ChessMove> validMoves = new ArrayList<ChessMove>();
             ChessPiece piece = board.getPiece(myPosition);
             if (piece.getPieceType() == PieceType.KNIGHT) {return knightMove(validMoves, board);}
-            if (piece.getPieceType() == PieceType.KING) {return kingMove(validMoves);}
-            
+            if (piece.getPieceType() == PieceType.KING) {return kingMove(validMoves, board);}
+
         return validMoves;
     }
 
-    private List<ChessMove> kingMove(List<ChessMove> validMoves) {
+    private List<ChessMove> kingMove(List<ChessMove> validMoves, ChessBoard board) {
         int row = position.getRow();
         int col = position.getColumn();
 
+        if (col-1>0 && board.getPiece(new ChessPosition(row, col-1)).team != this.team) {
+            validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), null));}
 
+        if (col-1>0 && board.getPiece(new ChessPosition(row, col-1)).team != this.team) {
+            validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), null));}
+
+        if (col-1>0 && board.getPiece(new ChessPosition(row, col-1)).team != this.team) {
+            validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), null));}
+
+        if (col+1<=8 && board.getPiece(new ChessPosition(row, col-1)).team != this.team) {
+            validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), null));}
+
+        if (col+1<=8 && board.getPiece(new ChessPosition(row, col-1)).team != this.team) {
+            validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), null));}
+
+        if (col+1<=8 && board.getPiece(new ChessPosition(row, col-1)).team != this.team) {
+            validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), null));}
+
+        if (col+1<=8 && board.getPiece(new ChessPosition(row, col-1)).team != this.team) {
+            validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), null));}
+
+        if (col+1<=8 && board.getPiece(new ChessPosition(row, col-1)).team != this.team) {
+            validMoves.add(new ChessMove(position, new ChessPosition(row-1, col-2), null));}
         return validMoves;
     }
 
