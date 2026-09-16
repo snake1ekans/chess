@@ -302,7 +302,7 @@ public class ChessPiece {
                 }
             }
             //double advance
-            if ((position.getColumn()==2 && board.getPiece(forward)==null && board.getPiece(new ChessPosition(col, 4))==null) ) {
+            if ((position.getRow()==2 && board.getPiece(forward)==null && board.getPiece(new ChessPosition(col, 4))==null) ) {
                 validMoves.add(new ChessMove(position, new ChessPosition(4, col), null));
             }
         } else {
