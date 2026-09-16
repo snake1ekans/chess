@@ -145,40 +145,56 @@ public class ChessPiece {
         //left down
         while(i<8) {
             i++;
-            if (row-i<=0 || col-i<=0) {
+            ChessPosition tryPiece = new ChessPosition(row-i, col-i);
+            if (row-i<=0 || col-i<=0 || (board.getPiece(tryPiece) != null && board.getPiece(tryPiece).team == this.team)) {
                 break;
             }
+
             validMoves.add(new ChessMove(position, new ChessPosition(row-i, col-i), null));
+            if (board.getPiece(tryPiece)!=null && board.getPiece(tryPiece).team != this.team) {break;}
         }
         //left up
         i=0;
         while(i<8) {
             i++;
-            if (row-i<=0 || col+i>8) {
+            ChessPosition tryPiece = new ChessPosition(row-i, col+i);
+            if (row-i<=0 || col+i>8|| (board.getPiece(tryPiece) != null && board.getPiece(tryPiece).team == this.team)) {
                 break;
             }
             validMoves.add(new ChessMove(position, new ChessPosition(row-i, col+i), null));
+            if (board.getPiece(tryPiece)!=null && board.getPiece(tryPiece).team != this.team) {break;}
+
         }
+
         //right down
         i=0;
         while(i<8) {
             i++;
-            if (row+i>8|| col-i<=0) {
+            ChessPosition tryPiece = new ChessPosition(row+i, col-i);
+            if (row+i>8|| col-i<=0|| (board.getPiece(tryPiece) != null && board.getPiece(tryPiece).team == this.team)) {
                 break;
             }
             validMoves.add(new ChessMove(position, new ChessPosition(row+i, col-i), null));
+            if (board.getPiece(tryPiece)!=null && board.getPiece(tryPiece).team != this.team) {break;}
+
         }
         i=0;
         //right up
         while(i<8) {
             i++;
-            if (row+i>8 || col+i>8) {
+            ChessPosition tryPiece = new ChessPosition(row+i, col+i);
+            if (row+i>8 || col+i>8|| (board.getPiece(tryPiece) != null && board.getPiece(tryPiece).team == this.team)) {
                 break;
             }
             validMoves.add(new ChessMove(position, new ChessPosition(row+i, col+i), null));
+            if (board.getPiece(tryPiece)!=null && board.getPiece(tryPiece).team != this.team) {break;}
+
         }
         return validMoves;
     }
+
+
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
