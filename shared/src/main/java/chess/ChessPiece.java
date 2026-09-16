@@ -15,6 +15,10 @@ public class ChessPiece {
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.team = pieceColor;
         this.type = type;
+        boolean specialMove = false;
+        if (type == PieceType.KING || type == PieceType.PAWN) {
+            specialMove = true;
+        }
     }
 
     /**
@@ -58,6 +62,7 @@ public class ChessPiece {
             if (piece.getPieceType() == PieceType.BISHOP) {return bishopMove(validMoves, board, myPosition);}
             if (piece.getPieceType() == PieceType.ROOK) {return rookMove(validMoves, board, myPosition);}
             if (piece.getPieceType() == PieceType.QUEEN) {return queenMove(validMoves, board, myPosition);}
+            if (piece.getPieceType() == PieceType.PAWN) {return pawnMove(validMoves, board, myPosition);}
 
         return validMoves;
     }
@@ -250,10 +255,58 @@ public class ChessPiece {
         rookMove(validMoves, board, position);
         bishopMove(validMoves, board, position);
         return validMoves;
-
     }
 
-    
+    private List<ChessMove> pawnMove(List<ChessMove> validMoves, ChessBoard board, ChessPosition position) {
+        int row = position.getRow();
+        int col = position.getColumn();
+
+        //red logic
+        if (this.team == ChessGame.TeamColor.WHITE) {
+            //double advance
+            if (col+1>=8) {return validMoves;}
+            if ((position.getRow()==2 && board.getPiece(new ChessPosition(row, 4))==null)) {
+                validMoves.add(new ChessMove(position, new ChessPosition(row, 4), null));
+            }
+            //capture logic
+            ChessPosition leftCap = new ChessPosition(row-1, col+1);
+            ChessPosition rightCap = new ChessPosition(row+1, col+1);
+            if((row-1>0&&row+1<=8) && board.getPiece(leftCap) != null && board.getPiece(leftCap).team != this.team) {
+                validMoves.add(new ChessMove(position, leftCap, null));
+            }
+            if(board.getPiece(rightCap) != null && board.getPiece(leftCap).team != this.team) {
+                validMoves.add(new ChessMove(position, rightCap, null));
+            }
+            //advance logic
+            ChessPosition forward = new ChessPosition(row, col+1);
+            if (board.getPiece(forward)==null) {
+                validMoves.add(new ChessMove(position, forward, null));
+            }
+
+        } else {
+        //blue logic
+            if (col-1<=0) {return validMoves;}
+            if (position.getRow()==7 && board.getPiece(new ChessPosition(row, 5))==null) {
+                validMoves.add(new ChessMove(position, new ChessPosition(row, 5), null));
+            }
+            //capture logic
+            ChessPosition leftCap = new ChessPosition(row-1, col-1);
+            ChessPosition rightCap = new ChessPosition(row+1, col-1);
+            if((row-1>0&&row+1<=8) && board.getPiece(leftCap) != null && board.getPiece(leftCap).team != this.team) {
+                validMoves.add(new ChessMove(position, leftCap, null));
+            }
+            if(board.getPiece(rightCap) != null && board.getPiece(leftCap).team != this.team) {
+                validMoves.add(new ChessMove(position, rightCap, null));
+            }
+            //advance logic
+            ChessPosition forward = new ChessPosition(row, col-1);
+            if (board.getPiece(forward)==null) {
+                validMoves.add(new ChessMove(position, forward, null));
+            }
+        }
+        return validMoves;
+    }
+
 
 
     @Override
