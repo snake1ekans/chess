@@ -118,7 +118,7 @@ public class ChessPiece {
                 validMoves.add(new ChessMove(position, downRight, null));}
         }
 
-        if(col+2<8) { //move up
+        if(col+2<=8) { //move up
             ChessPosition upRight = new ChessPosition(row+1, col+2);
             ChessPosition upLeft = new ChessPosition(row-1, col+2);
             if (row-1>0 && (board.getPiece(upLeft) == null || board.getPiece(upLeft).team != this.team)) {
@@ -134,7 +134,7 @@ public class ChessPiece {
             if(col+1<=8 && (board.getPiece(leftUp) == null || board.getPiece(leftUp).team != this.team)) {
                 validMoves.add(new ChessMove(position, leftUp, null));}
         }
-        if(row+2<8) { //move right
+        if(row+2<=8) { //move right
             ChessPosition rightDown = new ChessPosition(row+2, col-1);
             ChessPosition rightUp = new ChessPosition(row+2, col+1);
             if(col-1>0 && (board.getPiece(rightDown) == null || board.getPiece(rightDown).team != this.team)){
