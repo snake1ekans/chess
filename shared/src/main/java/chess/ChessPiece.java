@@ -57,6 +57,7 @@ public class ChessPiece {
             if (piece.getPieceType() == PieceType.KING) {return kingMove(validMoves, board, myPosition);}
             if (piece.getPieceType() == PieceType.BISHOP) {return bishopMove(validMoves, board, myPosition);}
             if (piece.getPieceType() == PieceType.ROOK) {return rookMove(validMoves, board, myPosition);}
+            if (piece.getPieceType() == PieceType.QUEEN) {return queenMove(validMoves, board, myPosition);}
 
         return validMoves;
     }
@@ -244,6 +245,17 @@ public class ChessPiece {
         } i=0;
     return validMoves;
     }
+
+    private List<ChessMove> queenMove(List<ChessMove> validMoves, ChessBoard board, ChessPosition position) {
+        rookMove(validMoves, board, position);
+        bishopMove(validMoves, board, position);
+        return validMoves;
+
+    }
+
+    
+
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
