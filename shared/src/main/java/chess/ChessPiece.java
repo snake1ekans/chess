@@ -270,20 +270,14 @@ public class ChessPiece {
             ChessPosition rightCap = new ChessPosition(row+1, col+1);
             if(col-1>0 && board.getPiece(leftCap) != null && board.getPiece(leftCap).team != this.team) {
                 if (row+1==8) {
-                    validMoves.add(new ChessMove(position, leftCap, PieceType.QUEEN));
-                    validMoves.add(new ChessMove(position, leftCap, PieceType.BISHOP));
-                    validMoves.add(new ChessMove(position, leftCap, PieceType.KNIGHT));
-                    validMoves.add(new ChessMove(position, leftCap, PieceType.ROOK));
+                    addPromotion(validMoves, position, leftCap);
                 } else {
                     validMoves.add(new ChessMove(position, leftCap, null));
                 }
             }
             if(col+1<=8 && board.getPiece(rightCap) != null && board.getPiece(rightCap).team != this.team) {
                 if (row+1==8) {
-                    validMoves.add(new ChessMove(position, rightCap, PieceType.QUEEN));
-                    validMoves.add(new ChessMove(position, rightCap, PieceType.BISHOP));
-                    validMoves.add(new ChessMove(position, rightCap, PieceType.KNIGHT));
-                    validMoves.add(new ChessMove(position, rightCap, PieceType.ROOK));
+                    addPromotion(validMoves, position, rightCap);
                 } else {
                     validMoves.add(new ChessMove(position, rightCap, null));
                 }
@@ -293,10 +287,7 @@ public class ChessPiece {
             ChessPosition forward = new ChessPosition(row+1, col);
             if (board.getPiece(forward)==null) {
                 if (row + 1 == 8) {
-                    validMoves.add(new ChessMove(position, forward, PieceType.QUEEN));
-                    validMoves.add(new ChessMove(position, forward, PieceType.BISHOP));
-                    validMoves.add(new ChessMove(position, forward, PieceType.KNIGHT));
-                    validMoves.add(new ChessMove(position, forward, PieceType.ROOK));
+                    addPromotion(validMoves, position, forward);
                 } else {
                     validMoves.add(new ChessMove(position, forward, null));
                 }
@@ -313,20 +304,14 @@ public class ChessPiece {
             ChessPosition rightCap = new ChessPosition(row-1, col+1);
             if(col-1>0 && board.getPiece(leftCap) != null && board.getPiece(leftCap).team != this.team) {
                 if (row-1==1) {
-                    validMoves.add(new ChessMove(position, leftCap, PieceType.QUEEN));
-                    validMoves.add(new ChessMove(position, leftCap, PieceType.BISHOP));
-                    validMoves.add(new ChessMove(position, leftCap, PieceType.KNIGHT));
-                    validMoves.add(new ChessMove(position, leftCap, PieceType.ROOK));
+                    addPromotion(validMoves, position, leftCap);
                 } else {
                     validMoves.add(new ChessMove(position, leftCap, null));
                 }
             }
             if(col+1<9 && board.getPiece(rightCap) != null && board.getPiece(rightCap).team != this.team) {
                 if (row-1==1) {
-                    validMoves.add(new ChessMove(position, rightCap, PieceType.QUEEN));
-                    validMoves.add(new ChessMove(position, rightCap, PieceType.BISHOP));
-                    validMoves.add(new ChessMove(position, rightCap, PieceType.KNIGHT));
-                    validMoves.add(new ChessMove(position, rightCap, PieceType.ROOK));
+                    addPromotion(validMoves, position, rightCap);
                 } else {
                     validMoves.add(new ChessMove(position, rightCap, null));
                 }
@@ -335,10 +320,7 @@ public class ChessPiece {
             ChessPosition forward = new ChessPosition(row-1, col);
             if (board.getPiece(forward)==null) {
                 if (row - 1 == 1) {
-                    validMoves.add(new ChessMove(position, forward, PieceType.QUEEN));
-                    validMoves.add(new ChessMove(position, forward, PieceType.BISHOP));
-                    validMoves.add(new ChessMove(position, forward, PieceType.KNIGHT));
-                    validMoves.add(new ChessMove(position, forward, PieceType.ROOK));
+                    addPromotion(validMoves, position, forward);
                 } else {
                     validMoves.add(new ChessMove(position, forward, null));
                 }
@@ -347,6 +329,14 @@ public class ChessPiece {
                 validMoves.add(new ChessMove(position, new ChessPosition(5, col), null));
             }
         }
+        return validMoves;
+    }
+
+    private List<ChessMove> addPromotion(List<ChessMove> validMoves, ChessPosition position, ChessPosition newPosition) {
+        validMoves.add(new ChessMove(position, newPosition, PieceType.QUEEN));
+        validMoves.add(new ChessMove(position, newPosition, PieceType.BISHOP));
+        validMoves.add(new ChessMove(position, newPosition, PieceType.KNIGHT));
+        validMoves.add(new ChessMove(position, newPosition, PieceType.ROOK));
         return validMoves;
     }
 
