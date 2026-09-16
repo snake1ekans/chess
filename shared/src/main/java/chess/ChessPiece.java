@@ -55,6 +55,7 @@ public class ChessPiece {
 
             if (piece.getPieceType() == PieceType.KNIGHT) {return knightMove(validMoves, board, myPosition);}
             if (piece.getPieceType() == PieceType.KING) {return kingMove(validMoves, board, myPosition);}
+            if (piece.getPieceType() == PieceType.BISHOP) {return bishopMove(validMoves, board, myPosition);}
 
         return validMoves;
     }
@@ -98,7 +99,6 @@ public class ChessPiece {
     }
 
     private List<ChessMove> knightMove(List<ChessMove> validMoves, ChessBoard board, ChessPosition position) {
-//todo fix knight movement and same-team collision
         int row = position.getRow();
         int col = position.getColumn();
 
@@ -138,7 +138,47 @@ public class ChessPiece {
     return validMoves;
     }
 
-
+    private List<ChessMove> bishopMove(List<ChessMove> validMoves, ChessBoard board, ChessPosition position) {
+        int row = position.getRow();
+        int col = position.getColumn();
+        int i=0;
+        //left down
+        while(i<8) {
+            i++;
+            if (row-i<=0 || col-i<=0) {
+                break;
+            }
+            validMoves.add(new ChessMove(position, new ChessPosition(row-i, col-i), null));
+        }
+        //left up
+        i=0;
+        while(i<8) {
+            i++;
+            if (row-i<=0 || col+i>8) {
+                break;
+            }
+            validMoves.add(new ChessMove(position, new ChessPosition(row-i, col+i), null));
+        }
+        //right down
+        i=0;
+        while(i<8) {
+            i++;
+            if (row+i>8|| col-i<=0) {
+                break;
+            }
+            validMoves.add(new ChessMove(position, new ChessPosition(row+i, col-i), null));
+        }
+        i=0;
+        //right up
+        while(i<8) {
+            i++;
+            if (row+i>8 || col+i>8) {
+                break;
+            }
+            validMoves.add(new ChessMove(position, new ChessPosition(row+i, col+i), null));
+        }
+        return validMoves;
+    }
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
