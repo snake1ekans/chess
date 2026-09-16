@@ -56,6 +56,7 @@ public class ChessPiece {
             if (piece.getPieceType() == PieceType.KNIGHT) {return knightMove(validMoves, board, myPosition);}
             if (piece.getPieceType() == PieceType.KING) {return kingMove(validMoves, board, myPosition);}
             if (piece.getPieceType() == PieceType.BISHOP) {return bishopMove(validMoves, board, myPosition);}
+            if (piece.getPieceType() == PieceType.ROOK) {return rookMove(validMoves, board, myPosition);}
 
         return validMoves;
     }
@@ -193,8 +194,56 @@ public class ChessPiece {
         return validMoves;
     }
 
+    private List<ChessMove> rookMove(List<ChessMove> validMoves, ChessBoard board, ChessPosition position) {
+        int row = position.getRow();
+        int col = position.getColumn();
+        int i = 0;
 
+        //left
+        while(i<8) {
+            i++;
+            ChessPosition tryPiece = new ChessPosition(row-i, col);
+            if (row-i<=0 || (board.getPiece(tryPiece) != null && board.getPiece(tryPiece).team == this.team)) {
+                break;
+            }
+            validMoves.add(new ChessMove(position, new ChessPosition(row-i, col), null));
+            if (board.getPiece(tryPiece)!=null && board.getPiece(tryPiece).team != this.team) {break;}
+        } i=0;
 
+        //right
+        while(i<8) {
+            i++;
+            ChessPosition tryPiece = new ChessPosition(row+i, col);
+            if (row+i>8 || (board.getPiece(tryPiece) != null && board.getPiece(tryPiece).team == this.team)) {
+                break;
+            }
+            validMoves.add(new ChessMove(position, new ChessPosition(row+i, col), null));
+            if (board.getPiece(tryPiece)!=null && board.getPiece(tryPiece).team != this.team) {break;}
+        } i=0;
+
+        //down
+        while(i<8) {
+            i++;
+            ChessPosition tryPiece = new ChessPosition(row, col-i);
+            if (col-i<=0 || (board.getPiece(tryPiece) != null && board.getPiece(tryPiece).team == this.team)) {
+                break;
+            }
+            validMoves.add(new ChessMove(position, new ChessPosition(row, col-i), null));
+            if (board.getPiece(tryPiece)!=null && board.getPiece(tryPiece).team != this.team) {break;}
+        } i=0;
+
+        //up
+        while(i<8) {
+            i++;
+            ChessPosition tryPiece = new ChessPosition(row, col+i);
+            if (col+i>8|| (board.getPiece(tryPiece) != null && board.getPiece(tryPiece).team == this.team)) {
+                break;
+            }
+            validMoves.add(new ChessMove(position, new ChessPosition(row, col+i), null));
+            if (board.getPiece(tryPiece)!=null && board.getPiece(tryPiece).team != this.team) {break;}
+        } i=0;
+    return validMoves;
+    }
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
