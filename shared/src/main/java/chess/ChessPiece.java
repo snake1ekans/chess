@@ -2,12 +2,7 @@ package chess;
 
 import java.util.*;
 
-/**
- * Represents a single chess piece
- * <p>
- * Note: You can add to this class, but you may not alter
- * signature of the existing methods.
- */
+// Parent Class representing a single piece, its color, type, and potential moves when given a situation.
 public class ChessPiece {
     final ChessGame.TeamColor team;
     final ChessPiece.PieceType type;
@@ -21,9 +16,6 @@ public class ChessPiece {
         }
     }
 
-    /**
-     * The various different chess piece options
-     */
     public enum PieceType {
         KING,
         QUEEN,
@@ -32,27 +24,18 @@ public class ChessPiece {
         ROOK,
         PAWN
     }
-    /**
-     * @return Which team this chess piece belongs to
-     */
+
+    // query for team
     public ChessGame.TeamColor getTeamColor() {
         return team;
     }
 
-    /**
-     * @return which type of chess piece this piece is
-     */
+    // query for type
     public PieceType getPieceType() {
         return type;
     }
 
-    /**
-     * Calculates all the positions a chess piece can move to
-     * Does not take into account moves that are illegal due to leaving the king in
-     * danger
-     *
-     * @return Collection of valid moves
-     */
+    // parent function that returns all piece moves
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         List<ChessMove> validMoves = new ArrayList<ChessMove>();
             ChessPiece piece = board.getPiece(myPosition);
@@ -332,6 +315,7 @@ public class ChessPiece {
         return validMoves;
     }
 
+    //adds promotion with different types
     private List<ChessMove> addPromotion(List<ChessMove> validMoves, ChessPosition position, ChessPosition newPosition) {
         validMoves.add(new ChessMove(position, newPosition, PieceType.QUEEN));
         validMoves.add(new ChessMove(position, newPosition, PieceType.BISHOP));
@@ -339,8 +323,6 @@ public class ChessPiece {
         validMoves.add(new ChessMove(position, newPosition, PieceType.ROOK));
         return validMoves;
     }
-
-
 
     @Override
     public boolean equals(Object o) {
