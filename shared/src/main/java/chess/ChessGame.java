@@ -16,16 +16,18 @@ public class ChessGame {
     }
     private TeamColor curr_turn;
     private ChessBoard board;
-
-
+    public void setBoard(ChessBoard board) {
+        this.board = board;
+    }
+    public ChessBoard getBoard() {
+        return board;
+    }
     public TeamColor getTeamTurn() {
         return curr_turn;
     }
-
     public void setTeamTurn(TeamColor team) {
         curr_turn = team;
     }
-
     public enum TeamColor {
         WHITE,
         BLACK
@@ -40,6 +42,7 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = getBoard().getPiece(startPosition);
+
         return piece.pieceMoves(getBoard(), startPosition);
     }
 
@@ -56,19 +59,7 @@ public class ChessGame {
     }
 
     public boolean isInCheck(TeamColor teamColor) {
-        ChessPosition king = findKing(getBoard(), teamColor);
-        for (int i=1; i<9; i++) {
-            for (int j = 1; j<9; j++){
-                ChessPiece occupant = board.getPiece(new ChessPosition(i,j));
-                if (occupant==null) {continue;}
-                Collection<ChessMove> moves = occupant.pieceMoves(getBoard(), new ChessPosition(i,j));
-                for (ChessMove move : moves) {
-                    ChessPosition end = move.getEndPosition();
-                    if (end.getRow() == king.getRow() && end.getColumn() == king.getColumn()) {return true;}
-                }
-            }
-        }
-        return false;
+        return checkHelper(getBoard(), teamColor);
     }
 
     /**
@@ -92,13 +83,53 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
+
+
+
+    // ------ helpers -----
+
+    private ChessBoard tempBoardHelper(ChessBoard board, ChessMove testMove){
+        ChessBoard testBoard = new ChessBoard();
+        for (int i = 0; i<8; i++){
+            for (int j = 0; j<8; j++){
+                ChessPosition copyPostion = new ChessPosition(i,j);
+                ChessPiece copyPiece = board.getPiece(copyPostion);
+                testBoard.addPiece(copyPostion, copyPiece);
+            }
+        }
+        ChessPiece movePiece = board.getPiece(testMove.getStartPosition());
+        testBoard.addPiece(testMove.getEndPosition(), movePiece);
+        testBoard.addPiece(testMove.getStartPosition(), null);
+        return testBoard;
+    }
+
+    private boolean checkHelper(ChessBoard board, TeamColor color) {
+        ChessPosition king = findKing(board, color);
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPiece occupant = board.getPiece(new ChessPosition(i, j));
+                if (occupant == null) {
+                    continue;
+                }
+                Collection<ChessMove> moves = occupant.pieceMoves(getBoard(), new ChessPosition(i, j));
+                for (ChessMove move : moves) {
+                    ChessPosition end = move.getEndPosition();
+                    if (end.getRow() == king.getRow() && end.getColumn() == king.getColumn()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     private ChessPosition findKing(ChessBoard board, TeamColor color) {
         for (int i=1; i<9; i++) {
             for (int j = 1; j<9; j++){
                 ChessPiece occupant = board.getPiece(new ChessPosition(i,j));
                 if (occupant == null) {continue;}
                 if (occupant.getPieceType() == ChessPiece.PieceType.KING
-                && occupant.getTeamColor() == color){
+                        && occupant.getTeamColor() == color){
                     return new ChessPosition(i,j);
                 }
             }
@@ -107,13 +138,6 @@ public class ChessGame {
     }
 
 
-    public void setBoard(ChessBoard board) {
-        this.board = board;
-    }
-
-    public ChessBoard getBoard() {
-        return board;
-    }
 
     @Override
     public boolean equals(Object o) {
