@@ -335,4 +335,12 @@ public class ChessPiece {
     public int hashCode() {
         return Objects.hash(team, type);
     }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "team=" + team +
+                ", type=" + type +
+                '}';
+    }
 }

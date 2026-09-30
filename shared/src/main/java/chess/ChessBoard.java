@@ -65,5 +65,12 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(positions);
     }
+
+    @Override
+    public String toString() {
+        return "ChessBoard{" +
+                "positions=" + Arrays.toString(positions) +
+                '}';
+    }
 }
 
