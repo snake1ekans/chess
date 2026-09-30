@@ -69,7 +69,7 @@ public class ChessBoard {
     @Override
     public String toString() {
         return "ChessBoard{" +
-                "positions=" + Arrays.toString(positions) +
+                "positions=" + Arrays.deepToString(positions) +
                 '}';
     }
 }
