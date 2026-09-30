@@ -16,7 +16,7 @@ public class ChessGame {
         setTeamTurn(TeamColor.WHITE);
     }
 
-    private TeamColor curr_turn;
+    private TeamColor currTurn;
     private ChessBoard board;
     public void setBoard(ChessBoard board) {
         this.board = board;
@@ -25,10 +25,10 @@ public class ChessGame {
         return board;
     }
     public TeamColor getTeamTurn() {
-        return curr_turn;
+        return currTurn;
     }
     public void setTeamTurn(TeamColor team) {
-        curr_turn = team;
+        currTurn = team;
     }
     public enum TeamColor {
         WHITE,
@@ -164,11 +164,11 @@ public class ChessGame {
             return false;
         }
         ChessGame chessGame = (ChessGame) o;
-        return curr_turn == chessGame.curr_turn && Objects.equals(board, chessGame.board);
+        return currTurn == chessGame.currTurn && Objects.equals(board, chessGame.board);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(curr_turn, board);
+        return Objects.hash(currTurn, board);
     }
 }
