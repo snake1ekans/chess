@@ -247,7 +247,6 @@ public class ChessPiece {
 
         //red logic
         if (this.team == ChessGame.TeamColor.WHITE) {
-
             //capture logic
             ChessPosition leftCap = new ChessPosition(row+1, col-1);
             ChessPosition rightCap = new ChessPosition(row+1, col+1);
@@ -281,7 +280,6 @@ public class ChessPiece {
             }
         } else {
         //blue logic
-
             //capture logic
             ChessPosition leftCap = new ChessPosition(row-1, col-1);
             ChessPosition rightCap = new ChessPosition(row-1, col+1);

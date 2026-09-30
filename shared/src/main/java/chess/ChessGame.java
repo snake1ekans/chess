@@ -1,7 +1,6 @@
 package chess;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A class that can manage a chess game, making moves on a board
@@ -42,8 +41,17 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = getBoard().getPiece(startPosition);
-
-        return piece.pieceMoves(getBoard(), startPosition);
+        Collection v = piece.pieceMoves(getBoard(), startPosition);
+        List<ChessMove> valid = new ArrayList<>(v);
+        List<ChessMove> rms = new ArrayList<>();
+        for (ChessMove i:valid) {
+            ChessBoard tempBoard = tempBoardHelper(getBoard(), i);
+            if (checkHelper(tempBoard, piece.getTeamColor())){
+                rms.add(i);
+            }
+        }
+        valid.removeAll(rms);
+        return valid;
     }
 
     /**
@@ -90,11 +98,11 @@ public class ChessGame {
 
     private ChessBoard tempBoardHelper(ChessBoard board, ChessMove testMove){
         ChessBoard testBoard = new ChessBoard();
-        for (int i = 0; i<8; i++){
-            for (int j = 0; j<8; j++){
-                ChessPosition copyPostion = new ChessPosition(i,j);
-                ChessPiece copyPiece = board.getPiece(copyPostion);
-                testBoard.addPiece(copyPostion, copyPiece);
+        for (int i = 1; i<9; i++){
+            for (int j = 1; j<9; j++){
+                ChessPosition copyPosition = new ChessPosition(i,j);
+                ChessPiece copyPiece = board.getPiece(copyPosition);
+                testBoard.addPiece(copyPosition, copyPiece);
             }
         }
         ChessPiece movePiece = board.getPiece(testMove.getStartPosition());
@@ -111,9 +119,10 @@ public class ChessGame {
                 if (occupant == null) {
                     continue;
                 }
-                Collection<ChessMove> moves = occupant.pieceMoves(getBoard(), new ChessPosition(i, j));
+                Collection<ChessMove> moves = occupant.pieceMoves(board, new ChessPosition(i, j));
                 for (ChessMove move : moves) {
                     ChessPosition end = move.getEndPosition();
+                    //noinspection DataFlowIssue
                     if (end.getRow() == king.getRow() && end.getColumn() == king.getColumn()) {
                         return true;
                     }
