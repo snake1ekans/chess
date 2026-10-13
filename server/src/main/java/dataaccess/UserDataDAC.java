@@ -1,8 +1,11 @@
 package dataaccess;
+import model.UserData;
+
 class UserDataDAC {
-    UserDataDAC(){
 
+    UserData findUser(String Username) {
+        // requests userdata from server
+        return null;
     }
-
 
 }
