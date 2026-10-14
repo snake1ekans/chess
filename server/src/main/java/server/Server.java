@@ -1,16 +1,14 @@
 package server;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import io.javalin.*;
 import io.javalin.http.Context;
-import io.javalin.http.Handler;
-import model.AuthData;
-import org.jetbrains.annotations.NotNull;
+import model.UserData;
+import org.eclipse.jetty.server.Authentication;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Vector;
+// todo: create instances of broader services (userservice, gameservice etc) at server instantiation
+// todo: tests from TAs are looking for the specific codes given in phase 3 specs
+
 
 public class Server {
 
@@ -27,6 +25,11 @@ public class Server {
         javalin.get("/game", this::createHandler);
         javalin.put("/game", this::joinHandler);
         javalin.delete("/db", this::clearHandler);
+
+        //start services at server instantiation
+        AuthService AuthService = new AuthService();
+        GameService GameService = new GameService();
+        UserService UserService = new UserService();
     }
 
     public int run(int desiredPort) {
@@ -37,25 +40,10 @@ public class Server {
         javalin.stop();
     }
 
-    private boolean authCheck(Context ctx){
-        HashSet<String> valids = AuthService.getValidTokens();
-        String token = ctx.header("authorization");
-        if (valids == null || !valids.contains(token)){
-            ctx.contentType("application/json");
-            ctx.status(401);
-            ctx.result(new Gson().toJson(Map.of("msg", "invalid authorization")));
-            return false;
-        }
-        return true;
-    }
+
 
     private void registerHandler(Context context){
-         Vector<String> data = context.bodyAsClass(Vector.class);
-         String username = data.elementAt(0);
-         String password = data.elementAt(1);
-         String email = data.elementAt(2);
-
-         RegisterService registration = new RegisterService(username, password,email);
+         UserData requestData = new Gson().fromJson(context.body(), UserData.class);
 
 
     }
