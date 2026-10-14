@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.DataConflictException;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.UserData;
@@ -12,7 +13,10 @@ import org.eclipse.jetty.server.Authentication;
 
 public class Server {
 
-    private final Javalin javalin;
+    private final Javalin javalin; //server obj
+    private final AuthService authService; // AuthService object
+    private final GameService gameService; // AuthService object
+    private final UserService userService; // AuthService object
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
@@ -27,9 +31,9 @@ public class Server {
         javalin.delete("/db", this::clearHandler);
 
         //start services at server instantiation
-        AuthService AuthService = new AuthService();
-        GameService GameService = new GameService();
-        UserService UserService = new UserService();
+        authService = new AuthService();
+        gameService = new GameService();
+        userService = new UserService();
     }
 
     public int run(int desiredPort) {
@@ -43,9 +47,10 @@ public class Server {
 
 
     private void registerHandler(Context context){
-         UserData requestData = new Gson().fromJson(context.body(), UserData.class);
-
-
+//         UserData requestData = new Gson().fromJson(context.body(), UserData.class);
+//         try {
+//             userService.register(requestData);
+//         } catch (DataConflictException)
     }
     private void loginHandler(Context context){
 

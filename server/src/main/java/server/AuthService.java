@@ -6,7 +6,7 @@ import java.util.HashSet;
 
 public class AuthService {
 
-    AuthService(){
+    public AuthService(){
         AuthDAC dataAccess = new AuthDAC() {};
     }
 
