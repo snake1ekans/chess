@@ -1,24 +1,36 @@
 package server;
 
 import dataaccess.AuthDAC;
+import dataaccess.AuthDAC_Loc;
+import model.AuthData;
+import model.UserData;
 
 import java.util.HashSet;
+import java.util.UUID;
 
 public class AuthService {
 
+    AuthDAC dataAccess;
+    // todo: switch to SQL at the beginning of phase 4
     public AuthService(){
-        AuthDAC dataAccess = new AuthDAC() {};
+        dataAccess = new AuthDAC_Loc() {};
     }
 
-    private void login(){
-
+    // todo: Check to see if UUID duplicates are going to matter
+    public AuthData login(UserData user) {
+        AuthData token = new AuthData(user.username(), UUID.randomUUID().toString());
+        dataAccess.writeToken(token);
+        return token;
     }
 
-    private boolean authorize(){
-        return false;
+    public boolean authorize(AuthData authData) {
+        return dataAccess.checkToken(authData);
     }
 
-    private void logout(){
+    public void logout(){
 
+    }
+    public void deleteDB() {
+        dataAccess.deleteAll();
     }
 }

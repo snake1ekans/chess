@@ -24,4 +24,8 @@ public class UserDAC_Loc implements UserDAC{
     public void removeUser(UserData data) {
         userDataLocal.remove(data);
     }
+
+    public void deleteAll(){
+        userDataLocal.clear();
+    }
 }

@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.DataConflictException;
+import dataaccess.IncompleteRequestException;
 import model.UserData;
 import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,16 +20,16 @@ import java.util.Vector;
 
 public class UserServiceTests {
 
-    private static UserService service = new UserService();
-    private static UserData billy =  new UserData("billy123", "password", "testa@gmail.com" );
-    private static UserData bob = new UserData("bob1", "pass", "testb@gmail.com");
-    private static UserData joe = new UserData("joseph", "sampletext", "testc@gmail.com" );
-    private static UserData juan = new UserData("juannyboi", "lorem", "testd@gmail.com");
+    private final static UserService service = new UserService();
+    private final static UserData billy =  new UserData("billy123", "password", "testa@gmail.com" );
+    private final static UserData bob = new UserData("bob1", "pass", "testb@gmail.com");
+    private final static UserData joe = new UserData("joseph", "sampletext", "testc@gmail.com" );
+    private final static UserData juan = new UserData("juannyboi", "lorem", "testd@gmail.com");
 
 
     @Test
     @DisplayName("AddUserSuccess")
-    public void addUserSuccessful() {
+    public void addUserSuccessful() throws IncompleteRequestException {
         service.register(billy);
         service.register(joe);
         assertTrue(service.userExists(billy));
@@ -39,7 +40,7 @@ public class UserServiceTests {
 
     @Test
     @DisplayName("AddUserFail")
-    public void addUserFail() {
+    public void addUserFail() throws IncompleteRequestException {
         service.register(billy);
         assertThrows(DataConflictException.class, () ->{service.register(billy);});
         service.register(bob);
