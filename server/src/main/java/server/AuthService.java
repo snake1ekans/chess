@@ -27,7 +27,8 @@ public class AuthService {
         return dataAccess.checkToken(authData);
     }
 
-    public void logout(){
+    public void logout(AuthData authData){
+
 
     }
     public void deleteDB() {

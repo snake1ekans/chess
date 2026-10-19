@@ -1,20 +1,18 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import dataaccess.DataConflictException;
 import dataaccess.IncompleteRequestException;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.AuthData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 
-// todo: create instances of broader services (userservice, gameservice etc) at server instantiation
 // todo: tests from TAs are looking for the specific codes given in phase 3 specs
-
+// todo: questions: how to get the specific objects the API tests are looking for? How to know code coverage for tests?
 
 public class Server {
 
@@ -54,7 +52,6 @@ public class Server {
 
 
     // ---------- Handlers ----------
-
     private void registerHandler(Context context){
          UserData requestData = new Gson().fromJson(context.body(), UserData.class);
          try {
@@ -71,22 +68,33 @@ public class Server {
             badRequestHelper(context);
          }
     }
-    private void loginHandler(Context context){
-
+    private void loginHandler(Context context) throws IncompleteRequestException, DataAccessException, DataConflictException {
+        UserData requestData = new Gson().fromJson(context.body(), UserData.class);
+        try {
+            userService.login(requestData);
+            AuthData token = authService.login(requestData);
+            context.contentType("application/json");
+            context.status(200);
+            context.result(new Gson().toJson(Map.of(requestData.username(), token.authToken())));
+        } catch (IncompleteRequestException missingData) {
+            badRequestHelper(context);
+        } catch (DataConflictException | DataAccessException badData) {
+            unauthorizedHelper(context);
+        }
     }
-
+    //todo: finish this function
     private void logoutHandler(Context context){
-
+        AuthData authData = new AuthData(context.header("authorization"), null);
     }
-
+    // todo: finish this function
     private void listHandler(Context context){
 
     }
-
+    // todo: finish this function
     private void createHandler(Context context){
 
     }
-
+    // todo: finish this function
     private void joinHandler(Context context){
 
     }
@@ -103,5 +111,11 @@ public class Server {
         context.contentType("application/json");
         context.status(400);
         context.result(new Gson().toJson(Map.of("message", "error: bad request")));
+    }
+
+    private void unauthorizedHelper(Context context) {
+        context.contentType("application/json");
+        context.status(401);
+        context.result(new Gson().toJson(Map.of("message", "error: unauthorized")));
     }
 }

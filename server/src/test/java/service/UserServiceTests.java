@@ -1,22 +1,16 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.DataConflictException;
 import dataaccess.IncompleteRequestException;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import server.MissingDataException;
-import server.Server;
 import server.UserService;
-
-import javax.xml.crypto.Data;
-import java.rmi.AccessException;
-import java.util.Vector;
 
 public class UserServiceTests {
 
@@ -26,6 +20,10 @@ public class UserServiceTests {
     private final static UserData joe = new UserData("joseph", "sampletext", "testc@gmail.com" );
     private final static UserData juan = new UserData("juannyboi", "lorem", "testd@gmail.com");
 
+    @AfterEach
+    public void clearDB(){
+        service.deleteDB();
+    }
 
     @Test
     @DisplayName("AddUserSuccess")
@@ -48,4 +46,40 @@ public class UserServiceTests {
         assertThrows(DataConflictException.class, () ->{service.register(bob);});
     }
 
+    @Test
+    @DisplayName("CredentialCheckSuccess")
+    public void credentialCheckSuccess() throws IncompleteRequestException, DataAccessException {
+        service.register(billy);
+        service.register(bob);
+        assertTrue(service.login(billy));
+        assertTrue(service.login(bob));
+    }
+
+    @Test
+    @DisplayName("CredentialCheckBadPassword")
+    public void badPassword() throws IncompleteRequestException {
+        service.register(billy);
+        service.register(bob);
+        UserData badCred = new UserData("billy123", "passw0rd", null);
+        assertThrows(DataConflictException.class, () -> service.login(badCred));
+        assertThrows(DataAccessException.class, () -> service.login(joe));
+    }
+
+    @Test
+    @DisplayName("CredentialCheckNoPassword")
+    public void NoPassword() throws IncompleteRequestException {
+        service.register(billy);
+        service.register(bob);
+        UserData badCred = new UserData("billy123", null, null);
+        assertThrows(IncompleteRequestException.class, () -> service.login(badCred));
+        assertThrows(DataAccessException.class, () -> service.login(joe));
+    }
+
+
+
+    @Test
+    @DisplayName("NoUserAuth")
+    public void noUser() {
+
+    }
 }

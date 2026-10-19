@@ -1,23 +1,13 @@
 package service;
 
-import dataaccess.DataConflictException;
 import dataaccess.IncompleteRequestException;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import server.AuthService;
-import server.MissingDataException;
-import server.Server;
-import server.UserService;
-
-import javax.xml.crypto.Data;
-import java.rmi.AccessException;
-import java.util.Vector;
 
 public class AuthServiceTests {
 
