@@ -1,4 +1,4 @@
-package dataaccess;
+package exceptions;
 
 // A conflict file that is thrown whenever unauthorized write requests are made within the database
 // Useful for

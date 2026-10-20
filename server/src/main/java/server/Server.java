@@ -1,17 +1,20 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
-import dataaccess.DataConflictException;
-import dataaccess.IncompleteRequestException;
+import exceptions.DataAccessException;
+import exceptions.DataConflictException;
+import exceptions.IncompleteRequestException;
+import exceptions.NotAuthorizedException;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.AuthData;
 import model.UserData;
+import service.AuthService;
+import service.GameService;
+import service.UserService;
 
 import java.util.Map;
 
-// todo: tests from TAs are looking for the specific codes given in phase 3 specs
 // todo: questions: how to get the specific objects the API tests are looking for? How to know code coverage for tests?
 
 public class Server {
@@ -52,6 +55,7 @@ public class Server {
 
 
     // ---------- Handlers ----------
+
     private void registerHandler(Context context){
          UserData requestData = new Gson().fromJson(context.body(), UserData.class);
          try {
@@ -59,7 +63,7 @@ public class Server {
              AuthData token = authService.login(requestData);
              context.contentType("application/json");
              context.status(200);
-             context.result(new Gson().toJson(Map.of(requestData.username(), token.authToken())));
+             context.result(new Gson().toJson(Map.of("username", requestData.username(), "authToken", token.authToken())));
          } catch (DataConflictException user_exists) {
              context.contentType("application/json");
              context.status(403);
@@ -75,25 +79,45 @@ public class Server {
             AuthData token = authService.login(requestData);
             context.contentType("application/json");
             context.status(200);
-            context.result(new Gson().toJson(Map.of(requestData.username(), token.authToken())));
+            context.result(new Gson().toJson(Map.of("username", requestData.username(), "authToken", token.authToken())));
         } catch (IncompleteRequestException missingData) {
             badRequestHelper(context);
         } catch (DataConflictException | DataAccessException badData) {
             unauthorizedHelper(context);
         }
     }
+
     //todo: finish this function
     private void logoutHandler(Context context){
-        AuthData authData = new AuthData(context.header("authorization"), null);
+        AuthData authData = new AuthData(null, context.header("authorization"));
+        try {
+            authService.authorize(authData);
+            authService.logout(authData);
+            context.status(200);
+            context.result();
+        } catch (NotAuthorizedException | IncompleteRequestException n) {
+            unauthorizedHelper(context);
+        }
     }
+
     // todo: finish this function
     private void listHandler(Context context){
-
+        AuthData authData = new AuthData(null, context.header("authorization"));
+        try {
+            authService.authorize(authData);
+            authService.logout(authData);
+            context.status(200);
+            context.result();
+        } catch (NotAuthorizedException | IncompleteRequestException n) {
+            unauthorizedHelper(context);
+        }
     }
+
     // todo: finish this function
     private void createHandler(Context context){
 
     }
+
     // todo: finish this function
     private void joinHandler(Context context){
 
@@ -103,6 +127,7 @@ public class Server {
         authService.deleteDB();
         userService.deleteDB();
         gameService.deleteDB();
+
     }
 
     // ---------- Helpers ----------

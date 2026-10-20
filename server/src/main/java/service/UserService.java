@@ -1,6 +1,9 @@
-package server;
+package service;
 
 import dataaccess.*;
+import exceptions.DataAccessException;
+import exceptions.DataConflictException;
+import exceptions.IncompleteRequestException;
 import model.UserData;
 
 import java.util.Objects;
@@ -21,6 +24,7 @@ public class UserService {
                 userData.password() == null ||
                 userData.email() == null) {
             throw new IncompleteRequestException("bad dataAccess");
+            //todo: write test for this
         }
         //check if user exists, then throw error or add user
         if (dataAccess.getUser(userData)!= null) {

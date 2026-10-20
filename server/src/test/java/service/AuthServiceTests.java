@@ -1,13 +1,16 @@
 package service;
 
-import dataaccess.IncompleteRequestException;
+import exceptions.IncompleteRequestException;
+import exceptions.NotAuthorizedException;
+import model.AuthData;
 import model.UserData;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.UUID;
 
-import server.AuthService;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthServiceTests {
 
@@ -17,6 +20,10 @@ public class AuthServiceTests {
     private final static UserData joe = new UserData("joseph", "sampletext", "testc@gmail.com" );
     private final static UserData juan = new UserData("juannyboi", "lorem", "testd@gmail.com");
 
+    @AfterEach
+    public void clearDB(){
+        authService.deleteDB();
+    }
 
     @Test
     @DisplayName("GenerateTokenSuccess")
@@ -27,10 +34,33 @@ public class AuthServiceTests {
         assertTrue(authService.authorize(bobToken));
     }
 
-//    @Test
-//    @DisplayName("No Token Passed")
-//    public void noTokenPassed() throws
+    @Test
+    @DisplayName("NoTokenPassed")
+    public void noTokenPassed() throws IncompleteRequestException {
+        var billyToken = authService.login(billy);
+        AuthData badToken = new AuthData(null, null);
+        assertThrows(IncompleteRequestException.class, () ->authService.authorize(null));
+        assertThrows(IncompleteRequestException.class, () ->authService.authorize(badToken));
+        assertTrue(authService.authorize(billyToken));
+    }
 
+    @Test
+    @DisplayName("TokenNotInDB")
+    public void tokenNotInDB() throws IncompleteRequestException, NotAuthorizedException {
+        var billyToken = authService.login(billy);
+        AuthData badToken = new AuthData(null, UUID.randomUUID().toString());
+        assertThrows(NotAuthorizedException.class, () -> authService.authorize(badToken));
+        assertTrue(authService.authorize(billyToken));
+    }
+
+    @Test
+    @DisplayName("LogoutSuccess")
+    public void logoutSuccess() throws IncompleteRequestException {
+        var billyToken = authService.login(billy);
+        assertTrue(authService.authorize(billyToken));
+        authService.logout(billyToken);
+        assertThrows(NotAuthorizedException.class, () -> authService.authorize(billyToken));
+    }
 
 
 }

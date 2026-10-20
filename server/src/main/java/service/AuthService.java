@@ -1,11 +1,12 @@
-package server;
+package service;
 
 import dataaccess.AuthDAC;
 import dataaccess.AuthDAC_Loc;
+import exceptions.IncompleteRequestException;
+import exceptions.NotAuthorizedException;
 import model.AuthData;
 import model.UserData;
 
-import java.util.HashSet;
 import java.util.UUID;
 
 public class AuthService {
@@ -23,14 +24,22 @@ public class AuthService {
         return token;
     }
 
-    public boolean authorize(AuthData authData) {
-        return dataAccess.checkToken(authData);
+    public Boolean authorize(AuthData authData) throws IncompleteRequestException {
+        if (authData.authToken() == null) {
+            throw new IncompleteRequestException("missing token");
+        }
+        Boolean auth = dataAccess.checkToken(authData);
+        if (!auth) {
+            throw new NotAuthorizedException("bad token");
+        } else {
+            return true;
+        }
     }
 
     public void logout(AuthData authData){
-
-
+        dataAccess.deleteToken(authData);
     }
+
     public void deleteDB() {
         dataAccess.deleteAll();
     }

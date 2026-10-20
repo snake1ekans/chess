@@ -1,16 +1,14 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.DataConflictException;
-import dataaccess.IncompleteRequestException;
+import exceptions.DataAccessException;
+import exceptions.DataConflictException;
+import exceptions.IncompleteRequestException;
 import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import server.UserService;
 
 public class UserServiceTests {
 
@@ -37,7 +35,12 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("AddUserFail")
+    @DisplayName("AddUserMissingField")
+    public void addUserMissingField() {
+        assertThrows(IncompleteRequestException.class, () -> {service.register(new UserData(null, "pass", "testeemail"));});
+    }
+    @Test
+    @DisplayName("AddDuplicateUser")
     public void addUserFail() throws IncompleteRequestException {
         service.register(billy);
         assertThrows(DataConflictException.class, () ->{service.register(billy);});
@@ -75,11 +78,4 @@ public class UserServiceTests {
         assertThrows(DataAccessException.class, () -> service.login(joe));
     }
 
-
-
-    @Test
-    @DisplayName("NoUserAuth")
-    public void noUser() {
-
-    }
 }

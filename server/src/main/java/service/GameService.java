@@ -1,4 +1,4 @@
-package server;
+package service;
 
 import dataaccess.GameDAC;
 import dataaccess.GameDAC_Loc;
@@ -7,7 +7,7 @@ public class GameService {
 
     GameDAC dataAccess;
 
-    GameService(){
+    public GameService(){
         dataAccess = new GameDAC_Loc();
     }
     public void deleteDB(){

@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 public class AuthDAC_Loc implements AuthDAC{
     HashMap<String,AuthData> authData;
+
     protected AuthDAC_Loc(){
         authData = new HashMap<>();
     }
