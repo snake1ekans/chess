@@ -1,5 +1,6 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import exceptions.DataAccessException;
 import exceptions.DataConflictException;
@@ -8,11 +9,13 @@ import exceptions.NotAuthorizedException;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import service.AuthService;
 import service.GameService;
 import service.UserService;
 
+import java.util.HashMap;
 import java.util.Map;
 
 // todo: questions: how to get the specific objects the API tests are looking for? How to know code coverage for tests?
@@ -86,15 +89,12 @@ public class Server {
             unauthorizedHelper(context);
         }
     }
-
-    //todo: finish this function
     private void logoutHandler(Context context){
         AuthData authData = new AuthData(null, context.header("authorization"));
         try {
             authService.authorize(authData);
             authService.logout(authData);
             context.status(200);
-            context.result();
         } catch (NotAuthorizedException | IncompleteRequestException n) {
             unauthorizedHelper(context);
         }
@@ -102,20 +102,32 @@ public class Server {
 
     // todo: finish this function
     private void listHandler(Context context){
-        AuthData authData = new AuthData(null, context.header("authorization"));
         try {
-            authService.authorize(authData);
-            authService.logout(authData);
+            authService.authorize(new AuthData(null, context.header("authorization")));
+//            HashMap<String, GameData> gameHashMap = gameService.getGames(); // todo: try a different data type
             context.status(200);
             context.result();
-        } catch (NotAuthorizedException | IncompleteRequestException n) {
+        } catch (NotAuthorizedException n) {
             unauthorizedHelper(context);
+        } catch (IncompleteRequestException missingData) {
+            badRequestHelper(context);
         }
     }
 
     // todo: finish this function
     private void createHandler(Context context){
+        try {
+            GameData requestData = new Gson().fromJson(context.body(), GameData.class);
+            authService.authorize(new AuthData(null, context.header("authorization")));
+            Integer gameID = gameService.createGame(requestData);
 
+            context.status(200);
+            context.result(new Gson().toJson(Map.of("gameID", gameID)));
+        } catch (NotAuthorizedException n) {
+            unauthorizedHelper(context);
+        } catch (IncompleteRequestException missingData) {
+            badRequestHelper(context);
+        }
     }
 
     // todo: finish this function
