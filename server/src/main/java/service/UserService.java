@@ -19,7 +19,7 @@ public class UserService {
 
 // ---------- endpoint parents ----------
     public void register(UserData userData) throws DataConflictException, IncompleteRequestException {
-        // check for missing fields
+        //todo: need to reserve "Player Slot Available" or prohibit whitespace chars in username
         if (userData.username() == null ||
                 userData.password() == null ||
                 userData.email() == null) {

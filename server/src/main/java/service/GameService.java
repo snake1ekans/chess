@@ -3,6 +3,7 @@ package service;
 import chess.ChessGame;
 import dataaccess.GameDAC;
 import dataaccess.GameDAC_Loc;
+import exceptions.DataAccessException;
 import exceptions.IncompleteRequestException;
 import model.GameData;
 
@@ -25,10 +26,13 @@ public class GameService {
         return dataAccess.createGame(gameData.gameName());
     }
 
-//    public HashMap<String, GameData> getGames() {
-//        dataAccess.
-//    }
+    public HashMap<Integer, GameData> getGames() {
+        return dataAccess.listGames();
+    }
 
+    public void joinGame(GameData requestData) {
+
+    }
     public void deleteDB(){
         dataAccess.deleteAll();
     }

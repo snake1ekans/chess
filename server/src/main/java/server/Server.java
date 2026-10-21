@@ -70,7 +70,7 @@ public class Server {
          } catch (DataConflictException user_exists) {
              context.contentType("application/json");
              context.status(403);
-             context.result(new Gson().toJson(Map.of("message", "error: already taken")));return;
+             context.result(new Gson().toJson(Map.of("message", "error: already taken")));
          } catch (IncompleteRequestException missing_data) {
             badRequestHelper(context);
          }
@@ -78,6 +78,9 @@ public class Server {
     private void loginHandler(Context context) throws IncompleteRequestException, DataAccessException, DataConflictException {
         UserData requestData = new Gson().fromJson(context.body(), UserData.class);
         try {
+//            if (context.header("authorization") != null){  // TODO: potential bug here if authtoken isn't cleared by browser
+//
+//            }
             userService.login(requestData);
             AuthData token = authService.login(requestData);
             context.contentType("application/json");
@@ -99,22 +102,6 @@ public class Server {
             unauthorizedHelper(context);
         }
     }
-
-    // todo: finish this function
-    private void listHandler(Context context){
-        try {
-            authService.authorize(new AuthData(null, context.header("authorization")));
-//            HashMap<String, GameData> gameHashMap = gameService.getGames(); // todo: try a different data type
-            context.status(200);
-            context.result();
-        } catch (NotAuthorizedException n) {
-            unauthorizedHelper(context);
-        } catch (IncompleteRequestException missingData) {
-            badRequestHelper(context);
-        }
-    }
-
-    // todo: finish this function
     private void createHandler(Context context){
         try {
             GameData requestData = new Gson().fromJson(context.body(), GameData.class);
@@ -131,7 +118,37 @@ public class Server {
     }
 
     // todo: finish this function
-    private void joinHandler(Context context){
+    private void listHandler(Context context){
+        try {
+            authService.authorize(new AuthData(null, context.header("authorization")));
+            HashMap<Integer, GameData> gameHashMap = gameService.getGames();
+            if (gameHashMap.isEmpty()){
+                context.contentType("application/json");
+                context.status(200);
+            } else {
+                context.contentType("application/json");
+                context.result(new Gson().toJson(Map.of("games", gameHashMap)));
+                context.status(200);
+            }
+        } catch (NotAuthorizedException n) {
+            unauthorizedHelper(context);
+        } catch (IncompleteRequestException missingData) {
+            badRequestHelper(context);
+        }
+    }
+
+    // todo: finish this function
+    private void joinHandler(Context context) throws NotAuthorizedException {
+        try {
+            GameData requestData = new Gson().fromJson(context.body(), GameData.class);
+            authService.authorize(new AuthData(null, context.header("authorization")));
+
+        } catch (NotAuthorizedException n) {
+            unauthorizedHelper(context);
+        } catch (IncompleteRequestException n) {
+            badRequestHelper(context);
+        }
+
 
     }
 

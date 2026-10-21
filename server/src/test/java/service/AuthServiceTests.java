@@ -62,5 +62,13 @@ public class AuthServiceTests {
         assertThrows(NotAuthorizedException.class, () -> authService.authorize(billyToken));
     }
 
+    // todo: this test could be needed to prevent multiple login
+//    @Test
+//    @DisplayName("MultipleLogin")
+//    public void muiltipleLogin() throws IncompleteRequestException {
+//        var billyToken = authService.login(billy);
+//        assertTrue(authService.authorize(billyToken));
+//        assertThrows(authService.login(billy))
+//    }
 
 }
