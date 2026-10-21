@@ -6,5 +6,6 @@ public interface AuthDAC {
     void writeToken(AuthData token);
     boolean checkToken(AuthData token);
     void deleteToken(AuthData token);
+    String getUsername(AuthData token);
     void deleteAll();
 }

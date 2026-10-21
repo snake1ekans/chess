@@ -28,12 +28,16 @@ public class AuthService {
         if (authData.authToken() == null) {
             throw new IncompleteRequestException("missing token");
         }
-        Boolean auth = dataAccess.checkToken(authData);
+        boolean auth = dataAccess.checkToken(authData);
         if (!auth) {
             throw new NotAuthorizedException("bad token");
         } else {
             return true;
         }
+    }
+
+    public String getUsername(AuthData authData) {
+        return dataAccess.getUsername(authData);
     }
 
     public void logout(AuthData authData){

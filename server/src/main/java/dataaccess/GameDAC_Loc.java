@@ -1,23 +1,24 @@
 package dataaccess;
 
-import chess.ChessBoard;
 import chess.ChessGame;
+import exceptions.DataAccessException;
+import exceptions.DataConflictException;
 import model.GameData;
+import service.JoinRequestData;
 
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 
 public class GameDAC_Loc implements GameDAC {
 
     // Globals
     HashMap<Integer, GameData> gamesMap;
-    HashMap<Integer, GameData> listGamesMap;
+    List<GameData> listGamesMap;
     private static final int maxGames = 9999;
 
     public GameDAC_Loc() {
         gamesMap = new HashMap<>();
-        listGamesMap = new HashMap<>();
+        listGamesMap = new ArrayList<>();
     }
 
     public Integer createGame(String gameName) {
@@ -27,18 +28,43 @@ public class GameDAC_Loc implements GameDAC {
 
         GameData gameData = new GameData(gameID, null, null, gameName, newGame);
         gamesMap.put(gameID, gameData);
-        GameData listGameData = new GameData(gameID, "Player Slot Available", "Player Slot Available", gameName, null);
-        listGamesMap.put(gameID, listGameData);
+        GameData listGameData = new GameData(gameID, null, null, gameName, null);
+        listGamesMap.add(listGameData);
 
         return gameID;
     }
 
-    public HashMap<Integer, GameData> listGames(){
+    public List<GameData> listGames(){
         return listGamesMap;
     }
-    public Boolean findGame(String gameID){
-        return false; // todo:temp
+    public void joinGame(JoinRequestData joinRequestData) throws DataConflictException, DataAccessException {
+        GameData target = gamesMap.get(joinRequestData.gameID());
+        if (target==null){
+            throw new DataAccessException("game doesn't exist");
+        }
+        if (Objects.equals(joinRequestData.playerColor(), "BLACK")) {
+            if (target.blackUsername() != null){
+                throw new DataConflictException("slot already taken");
+            }
+            GameData updatedGame = new GameData(target.gameID(), target.whiteUsername(),
+                    joinRequestData.userName(), target.gameName(), target.game());
+            gamesMap.replace(joinRequestData.gameID(), updatedGame);
+            listGamesMap.remove(new GameData(target.gameID(), target.whiteUsername(), target.blackUsername(), target.gameName(), null));
+            listGamesMap.add(new GameData(target.gameID(), target.whiteUsername(), joinRequestData.userName(), target.gameName(), null));
+
+        } else {
+
+            if (target.whiteUsername() != null){
+                throw new DataConflictException("slot already taken");
+            }
+            GameData updatedGame = new GameData(target.gameID(), joinRequestData.userName(),
+                    target.blackUsername(), target.gameName(), target.game());
+            gamesMap.replace(joinRequestData.gameID(), updatedGame);
+            listGamesMap.remove(new GameData(target.gameID(), target.whiteUsername(), target.blackUsername(), target.gameName(), null));
+            listGamesMap.add(new GameData(target.gameID(), joinRequestData.userName(), target.blackUsername(), target.gameName(), null));
+        }
     }
+
     public void deleteAll() {
         gamesMap.clear();
         listGamesMap.clear();

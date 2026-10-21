@@ -1,6 +1,5 @@
 package server;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import exceptions.DataAccessException;
 import exceptions.DataConflictException;
@@ -13,9 +12,10 @@ import model.GameData;
 import model.UserData;
 import service.AuthService;
 import service.GameService;
+import service.JoinRequestData;
 import service.UserService;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // todo: questions: how to get the specific objects the API tests are looking for? How to know code coverage for tests?
@@ -118,38 +118,37 @@ public class Server {
     }
 
     // todo: finish this function
+    private void joinHandler(Context context) throws NotAuthorizedException {
+        try {
+            JoinRequestData requestData = new Gson().fromJson(context.body(), JoinRequestData.class);
+            AuthData authToken = new AuthData(null, context.header("authorization"));
+            authService.authorize(authToken);
+            gameService.joinGame(new JoinRequestData(requestData.gameID(),
+                    requestData.playerColor(), authService.getUsername(authToken)));
+            context.status(200);
+        } catch (NotAuthorizedException n) {
+            unauthorizedHelper(context);
+        } catch (IncompleteRequestException | DataAccessException n) {
+            badRequestHelper(context);
+        } catch (DataConflictException n) {
+            context.status(403);
+            context.result(new Gson().toJson(Map.of("message", "error: already taken")));
+        }
+    }
+
+    // todo: finish this function
     private void listHandler(Context context){
         try {
             authService.authorize(new AuthData(null, context.header("authorization")));
-            HashMap<Integer, GameData> gameHashMap = gameService.getGames();
-            if (gameHashMap.isEmpty()){
-                context.contentType("application/json");
-                context.status(200);
-            } else {
-                context.contentType("application/json");
-                context.result(new Gson().toJson(Map.of("games", gameHashMap)));
-                context.status(200);
-            }
+            List<GameData> gameHashMap = gameService.getGames();
+            context.contentType("application/json");
+            context.result(new Gson().toJson(Map.of("games", gameHashMap)));
+            context.status(200);
         } catch (NotAuthorizedException n) {
             unauthorizedHelper(context);
         } catch (IncompleteRequestException missingData) {
             badRequestHelper(context);
         }
-    }
-
-    // todo: finish this function
-    private void joinHandler(Context context) throws NotAuthorizedException {
-        try {
-            GameData requestData = new Gson().fromJson(context.body(), GameData.class);
-            authService.authorize(new AuthData(null, context.header("authorization")));
-
-        } catch (NotAuthorizedException n) {
-            unauthorizedHelper(context);
-        } catch (IncompleteRequestException n) {
-            badRequestHelper(context);
-        }
-
-
     }
 
     private void clearHandler(Context context){

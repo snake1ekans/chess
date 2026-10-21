@@ -1,14 +1,14 @@
 package service;
 
-import chess.ChessGame;
 import dataaccess.GameDAC;
 import dataaccess.GameDAC_Loc;
 import exceptions.DataAccessException;
+import exceptions.DataConflictException;
 import exceptions.IncompleteRequestException;
 import model.GameData;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 //todo: create tests for these functions
 public class GameService {
@@ -26,13 +26,17 @@ public class GameService {
         return dataAccess.createGame(gameData.gameName());
     }
 
-    public HashMap<Integer, GameData> getGames() {
+    public List<GameData> getGames() {
         return dataAccess.listGames();
     }
 
-    public void joinGame(GameData requestData) {
-
+    public void joinGame(JoinRequestData requestData) throws DataConflictException, DataAccessException {
+        if (!Objects.equals(requestData.playerColor(), "WHITE") && !Objects.equals(requestData.playerColor(), "BLACK")) {
+            throw new DataAccessException("invalid color");
+        }
+        dataAccess.joinGame(requestData);
     }
+
     public void deleteDB(){
         dataAccess.deleteAll();
     }
