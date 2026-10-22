@@ -15,7 +15,7 @@ public class GameDacLoc implements GameDAC {
     HashMap<Integer, GameData> gamesMap;
     List<GameData> listGamesMap;
     HashMap<String, Integer> gameNames;
-    private static final int MaxGames = 9999;
+    private static final int MAX_GAMES = 9999;
 
     public GameDacLoc() {
         gamesMap = new HashMap<>();
@@ -25,7 +25,7 @@ public class GameDacLoc implements GameDAC {
 
     public Integer createGame(String gameName) {
         Random rng = new Random();
-        Integer gameID = rng.nextInt(MaxGames);
+        Integer gameID = rng.nextInt(MAX_GAMES);
         ChessGame newGame = new ChessGame();
         if(gameNames.get(gameName) != null){
             throw new DataConflictException("Already Exists");
