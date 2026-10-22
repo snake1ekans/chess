@@ -1,7 +1,7 @@
 package service;
 
 import dataaccess.GameDAC;
-import dataaccess.GameDAC_Loc;
+import dataaccess.GameDacLoc;
 import exceptions.DataAccessException;
 import exceptions.DataConflictException;
 import exceptions.IncompleteRequestException;
@@ -16,7 +16,7 @@ public class GameService {
     GameDAC dataAccess;
 
     public GameService(){
-        dataAccess = new GameDAC_Loc();
+        dataAccess = new GameDacLoc();
     }
 
     public Integer createGame(GameData gameData) throws IncompleteRequestException {
@@ -35,6 +35,9 @@ public class GameService {
             throw new DataAccessException("invalid color");
         }
         dataAccess.joinGame(requestData);
+    }
+    public GameData getGame(Integer gameID){ //testing-only
+        return dataAccess.getGame(gameID);
     }
 
     public void deleteDB(){

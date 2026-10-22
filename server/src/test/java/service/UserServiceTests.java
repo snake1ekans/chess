@@ -12,70 +12,70 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTests {
 
-    private final static UserService service = new UserService();
-    private final static UserData billy =  new UserData("billy123", "password", "testa@gmail.com" );
-    private final static UserData bob = new UserData("bob1", "pass", "testb@gmail.com");
-    private final static UserData joe = new UserData("joseph", "sampletext", "testc@gmail.com" );
-    private final static UserData juan = new UserData("juannyboi", "lorem", "testd@gmail.com");
+    private final static UserService ServiceObj = new UserService();
+    private final static UserData UserBilly =  new UserData("UserBilly123", "password", "testa@gmail.com" );
+    private final static UserData UserBob = new UserData("UserBob1", "pass", "testb@gmail.com");
+    private final static UserData UserJoe = new UserData("joseph", "sampletext", "testc@gmail.com" );
+    private final static UserData UserJuan = new UserData("juannyboi", "lorem", "testd@gmail.com");
 
     @AfterEach
     public void clearDB(){
-        service.deleteDB();
+        ServiceObj.deleteDB();
     }
 
     @Test
     @DisplayName("AddUserSuccess")
     public void addUserSuccessful() throws IncompleteRequestException {
-        service.register(billy);
-        service.register(joe);
-        assertTrue(service.userExists(billy));
-        assertTrue(service.userExists(joe));
-        assertFalse(service.userExists(bob));
-        assertFalse(service.userExists(juan));
+        ServiceObj.register(UserBilly);
+        ServiceObj.register(UserJoe);
+        assertTrue(ServiceObj.userExists(UserBilly));
+        assertTrue(ServiceObj.userExists(UserJoe));
+        assertFalse(ServiceObj.userExists(UserBob));
+        assertFalse(ServiceObj.userExists(UserJuan));
     }
 
     @Test
     @DisplayName("AddUserMissingField")
     public void addUserMissingField() {
-        assertThrows(IncompleteRequestException.class, () -> {service.register(new UserData(null, "pass", "testeemail"));});
+        assertThrows(IncompleteRequestException.class, () -> {ServiceObj.register(new UserData(null, "pass", "testeemail"));});
     }
     @Test
     @DisplayName("AddDuplicateUser")
     public void addUserFail() throws IncompleteRequestException {
-        service.register(billy);
-        assertThrows(DataConflictException.class, () ->{service.register(billy);});
-        service.register(bob);
-        assertThrows(DataConflictException.class, () ->{service.register(billy);});
-        assertThrows(DataConflictException.class, () ->{service.register(bob);});
+        ServiceObj.register(UserBilly);
+        assertThrows(DataConflictException.class, () ->{ServiceObj.register(UserBilly);});
+        ServiceObj.register(UserBob);
+        assertThrows(DataConflictException.class, () ->{ServiceObj.register(UserBilly);});
+        assertThrows(DataConflictException.class, () ->{ServiceObj.register(UserBob);});
     }
 
     @Test
     @DisplayName("CredentialCheckSuccess")
     public void credentialCheckSuccess() throws IncompleteRequestException, DataAccessException {
-        service.register(billy);
-        service.register(bob);
-        assertTrue(service.login(billy));
-        assertTrue(service.login(bob));
+        ServiceObj.register(UserBilly);
+        ServiceObj.register(UserBob);
+        assertTrue(ServiceObj.login(UserBilly));
+        assertTrue(ServiceObj.login(UserBob));
     }
 
     @Test
     @DisplayName("CredentialCheckBadPassword")
     public void badPassword() throws IncompleteRequestException {
-        service.register(billy);
-        service.register(bob);
-        UserData badCred = new UserData("billy123", "passw0rd", null);
-        assertThrows(DataConflictException.class, () -> service.login(badCred));
-        assertThrows(DataAccessException.class, () -> service.login(joe));
+        ServiceObj.register(UserBilly);
+        ServiceObj.register(UserBob);
+        UserData badCred = new UserData("UserBilly123", "passw0rd", null);
+        assertThrows(DataConflictException.class, () -> ServiceObj.login(badCred));
+        assertThrows(DataAccessException.class, () -> ServiceObj.login(UserJoe));
     }
 
     @Test
     @DisplayName("CredentialCheckNoPassword")
-    public void NoPassword() throws IncompleteRequestException {
-        service.register(billy);
-        service.register(bob);
-        UserData badCred = new UserData("billy123", null, null);
-        assertThrows(IncompleteRequestException.class, () -> service.login(badCred));
-        assertThrows(DataAccessException.class, () -> service.login(joe));
+    public void noPassword() throws IncompleteRequestException {
+        ServiceObj.register(UserBilly);
+        ServiceObj.register(UserBob);
+        UserData badCred = new UserData("UserBilly123", null, null);
+        assertThrows(IncompleteRequestException.class, () -> ServiceObj.login(badCred));
+        assertThrows(DataAccessException.class, () -> ServiceObj.login(UserJoe));
     }
 
 }

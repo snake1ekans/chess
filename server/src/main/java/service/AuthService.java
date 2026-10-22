@@ -1,7 +1,7 @@
 package service;
 
 import dataaccess.AuthDAC;
-import dataaccess.AuthDAC_Loc;
+import dataaccess.AuthDacLoc;
 import exceptions.IncompleteRequestException;
 import exceptions.NotAuthorizedException;
 import model.AuthData;
@@ -14,7 +14,7 @@ public class AuthService {
     AuthDAC dataAccess;
     // todo: switch to SQL at the beginning of phase 4
     public AuthService(){
-        dataAccess = new AuthDAC_Loc() {};
+        dataAccess = new AuthDacLoc() {};
     }
 
     // todo: Check to see if UUID duplicates are going to matter
@@ -25,7 +25,7 @@ public class AuthService {
     }
 
     public Boolean authorize(AuthData authData) throws IncompleteRequestException {
-        if (authData.authToken() == null) {
+        if (authData == null || authData.authToken() == null) {
             throw new IncompleteRequestException("missing token");
         }
         boolean auth = dataAccess.checkToken(authData);
