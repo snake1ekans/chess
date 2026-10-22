@@ -9,23 +9,28 @@ import service.JoinRequestData;
 import java.util.*;
 
 
-public class GameDAC_Loc implements GameDAC {
+public class GameDacLoc implements GameDAC {
 
     // Globals
     HashMap<Integer, GameData> gamesMap;
     List<GameData> listGamesMap;
-    private static final int maxGames = 9999;
+    HashMap<String, Integer> gameNames;
+    private static final int MaxGames = 9999;
 
-    public GameDAC_Loc() {
+    public GameDacLoc() {
         gamesMap = new HashMap<>();
         listGamesMap = new ArrayList<>();
+        gameNames = new HashMap<>();
     }
 
     public Integer createGame(String gameName) {
         Random rng = new Random();
-        Integer gameID = rng.nextInt(maxGames);
+        Integer gameID = rng.nextInt(MaxGames);
         ChessGame newGame = new ChessGame();
-
+        if(gameNames.get(gameName) != null){
+            throw new DataConflictException("Already Exists");
+        }
+        gameNames.put(gameName, gameID);
         GameData gameData = new GameData(gameID, null, null, gameName, newGame);
         gamesMap.put(gameID, gameData);
         GameData listGameData = new GameData(gameID, null, null, gameName, null);
@@ -37,6 +42,12 @@ public class GameDAC_Loc implements GameDAC {
     public List<GameData> listGames(){
         return listGamesMap;
     }
+
+    public GameData getGame(Integer gameID) {
+        return gamesMap.get(gameID);
+    }
+
+
     public void joinGame(JoinRequestData joinRequestData) throws DataConflictException, DataAccessException {
         GameData target = gamesMap.get(joinRequestData.gameID());
         if (target==null){
@@ -68,5 +79,6 @@ public class GameDAC_Loc implements GameDAC {
     public void deleteAll() {
         gamesMap.clear();
         listGamesMap.clear();
+        gameNames.clear();
     }
 }

@@ -5,12 +5,11 @@ package dataaccess;
 import model.UserData;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
-public class UserDAC_Loc implements UserDAC{
+public class UserDacLoc implements UserDAC{
     HashMap<String, UserData> userDataLocal;
 
-    public UserDAC_Loc(){
+    public UserDacLoc(){
         userDataLocal = new HashMap<>();
     }
 
@@ -20,10 +19,6 @@ public class UserDAC_Loc implements UserDAC{
 
     public UserData getUser(UserData data) {
         return (userDataLocal.get(data.username()));
-    }
-
-    public void removeUser(UserData data) {
-        userDataLocal.remove(data.username());
     }
 
     public void deleteAll(){

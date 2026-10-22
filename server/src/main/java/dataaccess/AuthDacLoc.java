@@ -4,10 +4,10 @@ import model.AuthData;
 
 import java.util.HashMap;
 
-public class AuthDAC_Loc implements AuthDAC{
+public class AuthDacLoc implements AuthDAC{
     HashMap<String,AuthData> authData;
 
-    protected AuthDAC_Loc(){
+    protected AuthDacLoc(){
         authData = new HashMap<>();
     }
 

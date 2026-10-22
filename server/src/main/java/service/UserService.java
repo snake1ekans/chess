@@ -14,7 +14,7 @@ public class UserService {
 
     // todo: Switch to SQL when phase 4 starts
     public UserService() {
-        dataAccess = new UserDAC_Loc();
+        dataAccess = new UserDacLoc();
     }
 
 // ---------- endpoint parents ----------
