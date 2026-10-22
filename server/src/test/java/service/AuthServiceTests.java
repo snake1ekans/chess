@@ -1,4 +1,4 @@
-package service;
+package java.service;
 
 import exceptions.IncompleteRequestException;
 import exceptions.NotAuthorizedException;

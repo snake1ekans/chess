@@ -1,4 +1,4 @@
-package service;
+package java.service;
 
 import exceptions.DataAccessException;
 import exceptions.DataConflictException;
@@ -7,6 +7,7 @@ import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,4 +1,4 @@
-package service;
+package java.service;
 import exceptions.DataAccessException;
 import exceptions.DataConflictException;
 import exceptions.IncompleteRequestException;
