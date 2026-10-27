@@ -1,4 +1,4 @@
-package java.service;
+package service;
 import exceptions.DataAccessException;
 import exceptions.DataConflictException;
 import exceptions.IncompleteRequestException;
@@ -6,6 +6,8 @@ import model.GameData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import service.GameService;
+import service.JoinRequestData;
 
 
 import static org.junit.jupiter.api.Assertions.*;

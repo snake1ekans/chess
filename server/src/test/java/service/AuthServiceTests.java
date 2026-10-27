@@ -1,4 +1,4 @@
-package java.service;
+package service;
 
 import exceptions.IncompleteRequestException;
 import exceptions.NotAuthorizedException;
@@ -7,6 +7,7 @@ import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import service.AuthService;
 
 import java.util.UUID;
 

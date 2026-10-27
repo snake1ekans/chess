@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.GameDAC;
 import dataaccess.GameDacLoc;
+import dataaccess.GameDacSql;
 import exceptions.DataAccessException;
 import exceptions.DataConflictException;
 import exceptions.IncompleteRequestException;
@@ -16,7 +17,7 @@ public class GameService {
     GameDAC dataAccess;
 
     public GameService(){
-        dataAccess = new GameDacLoc();
+        dataAccess = new GameDacSql();
     }
 
     public Integer createGame(GameData gameData) throws IncompleteRequestException {

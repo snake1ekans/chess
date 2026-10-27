@@ -78,9 +78,6 @@ public class Server {
     private void loginHandler(Context context) throws IncompleteRequestException, DataAccessException, DataConflictException {
         UserData requestData = new Gson().fromJson(context.body(), UserData.class);
         try {
-//            if (context.header("authorization") != null){  // TODO: potential bug here if authtoken isn't cleared by browser
-//
-//            }
             userService.login(requestData);
             AuthData token = authService.login(requestData);
             context.contentType("application/json");
@@ -116,8 +113,6 @@ public class Server {
             badRequestHelper(context);
         }
     }
-
-    // todo: finish this function
     private void joinHandler(Context context) throws NotAuthorizedException {
         try {
             JoinRequestData requestData = new Gson().fromJson(context.body(), JoinRequestData.class);
@@ -135,8 +130,6 @@ public class Server {
             context.result(new Gson().toJson(Map.of("message", "error: already taken")));
         }
     }
-
-    // todo: finish this function
     private void listHandler(Context context){
         try {
             authService.authorize(new AuthData(null, context.header("authorization")));
@@ -150,7 +143,6 @@ public class Server {
             badRequestHelper(context);
         }
     }
-
     private void clearHandler(Context context){
         authService.deleteDB();
         userService.deleteDB();

@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.AuthDAC;
 import dataaccess.AuthDacLoc;
+import dataaccess.AuthDacSql;
 import exceptions.IncompleteRequestException;
 import exceptions.NotAuthorizedException;
 import model.AuthData;
@@ -12,9 +13,9 @@ import java.util.UUID;
 public class AuthService {
 
     AuthDAC dataAccess;
-    // todo: switch to SQL at the beginning of phase 4
+
     public AuthService(){
-        dataAccess = new AuthDacLoc() {};
+        dataAccess = new AuthDacSql() {};
     }
 
     // todo: Check to see if UUID duplicates are going to matter
