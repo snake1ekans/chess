@@ -35,7 +35,7 @@ public class AuthDacSql implements AuthDAC {
     public void writeToken(AuthData token) {
         List<String>queries  = new ArrayList<String>();
         queries.add("USE chess;");
-        queries.add("INSERT INTO users (username, token) VALUES ('"
+        queries.add("INSERT INTO auth (username, token) VALUES ('"
                 + token.username() + "', '" + token.authToken() + "');");
         batcher(queries);
     }
@@ -65,7 +65,7 @@ public class AuthDacSql implements AuthDAC {
             }
             stat.executeBatch();
         } catch (SQLException s){
-            throw new DatabaseException("failed to create database");
+            throw new DatabaseException("Auth Failure");
         }
     }
 

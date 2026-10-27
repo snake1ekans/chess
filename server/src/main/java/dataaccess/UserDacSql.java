@@ -49,19 +49,10 @@ public class UserDacSql implements UserDAC {
     public UserData getUser(UserData data) {
         try (Connection conn = getConnection()){
             Statement stat = conn.createStatement();
-            for (String i : queries) {
-                stat.addBatch(i);
-            }
-            stat.executeBatch();
-        } catch (SQLException s){
-            throw new DatabaseException("Database Failure");
-        }
-        queries.add("SELECT " + data.username() + " FROM users");
-        ResultSet databaseData = batcher(queries);
-        try {
-            var user = databaseData.getString("username");
-            var pass = databaseData.getString("password");
-            var email = databaseData.getString("email");
+            ResultSet query = stat.executeQuery("SELECT " + data.username() + " FROM users");
+            var user = query.getString("username");
+            var pass = query.getString("password");
+            var email = query.getString("email");
             return new UserData(user, pass, email);
         } catch (SQLException e) {
             return null;
