@@ -32,7 +32,7 @@ public class UserDacSql implements UserDAC {
                 """);
             stat.executeBatch();
         } catch (SQLException s){
-            throw new DatabaseException("failed to connect");
+            throw new DatabaseException("UserData failure");
         }
     }
 
@@ -49,7 +49,8 @@ public class UserDacSql implements UserDAC {
     public UserData getUser(UserData data) {
         try (Connection conn = getConnection()){
             Statement stat = conn.createStatement();
-            ResultSet query = stat.executeQuery("SELECT " + data.username() + " FROM users");
+            ResultSet query = stat.executeQuery("SELECT * FROM users");
+            query.next();
             var user = query.getString("username");
             var pass = query.getString("password");
             var email = query.getString("email");

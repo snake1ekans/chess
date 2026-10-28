@@ -37,11 +37,10 @@ public class UserService {
         }
 
         UserData cred = dataAccess.getUser(userData);
-        var testPass = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
         if (cred == null){
             throw new DataAccessException("user not found");
         }
-        if (!Objects.equals(cred.password(), testPass)){
+        if (!BCrypt.checkpw(userData.password(), cred.password())){
             throw new DataConflictException("wrong password");
         }
         return true;

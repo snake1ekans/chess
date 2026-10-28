@@ -57,10 +57,18 @@ public class AuthDacSql implements AuthDAC {
         List<String>queries = new ArrayList<>();
         queries.add("USE chess;");
         queries.add("DELETE FROM auth WHERE token='" + token.authToken() + "';");
+        batcher(queries);
     }
 
     public String getUsername(AuthData token) {
-        return "";
+        try (Connection conn = getConnection()){
+            Statement stat = conn.createStatement();
+            ResultSet res = stat.executeQuery("SELECT * FROM auth WHERE token = '"+token.authToken()+"';");
+            res.next();
+            return res.getString("username");
+        } catch (SQLException e) {
+            return "";
+        }
     }
 
     public void deleteAll() {
