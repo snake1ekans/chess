@@ -61,7 +61,12 @@ public class UserDacSql implements UserDAC {
     }
 
     public void deleteAll() {
-
+        try (Connection conn = getConnection()){
+            Statement stat = conn.createStatement();
+            stat.execute("DROP TABLE users");
+        } catch (SQLException e) {
+            throw new DatabaseException("drop users error");
+        }
     }
 
     private void batcher(List<String> queries) throws DatabaseException {

@@ -72,7 +72,12 @@ public class AuthDacSql implements AuthDAC {
     }
 
     public void deleteAll() {
-
+        try (Connection conn = getConnection()){
+            Statement stat = conn.createStatement();
+            stat.execute("DROP TABLE auth");
+        } catch (SQLException e) {
+            throw new DatabaseException("drop auth error");
+        }
     }
 
     private void batcher(List<String> queries) throws DatabaseException {
