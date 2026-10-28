@@ -9,6 +9,7 @@ import java.net.ConnectException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static dataaccess.DatabaseManager.*;
 
@@ -41,11 +42,21 @@ public class AuthDacSql implements AuthDAC {
     }
 
     public boolean checkToken(AuthData token) {
-        return false;
+        try (Connection conn = getConnection()){
+            Statement stat = conn.createStatement();
+            ResultSet res = stat.executeQuery("SELECT * FROM auth WHERE token = '"+token.authToken()+"';");
+            res.next();
+            String userToken = res.getString("token");
+            return (Objects.equals(userToken, token.authToken()));
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
     public void deleteToken(AuthData token) {
-
+        List<String>queries = new ArrayList<>();
+        queries.add("USE chess;");
+        queries.add("DELETE FROM auth WHERE token='" + token.authToken() + "';");
     }
 
     public String getUsername(AuthData token) {
@@ -68,6 +79,4 @@ public class AuthDacSql implements AuthDAC {
             throw new DatabaseException("Auth Failure");
         }
     }
-
-
 }
