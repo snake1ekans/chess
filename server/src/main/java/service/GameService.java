@@ -1,8 +1,7 @@
 package service;
 
 import dataaccess.GameDAC;
-import dataaccess.GameDacLoc;
-import dataaccess.GameDacSql;
+import dataaccess.sql.GameDacSql;
 import exceptions.DataAccessException;
 import exceptions.DataConflictException;
 import exceptions.IncompleteRequestException;

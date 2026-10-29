@@ -1,8 +1,7 @@
 package service;
 
 import dataaccess.AuthDAC;
-import dataaccess.AuthDacLoc;
-import dataaccess.AuthDacSql;
+import dataaccess.sql.AuthDacSql;
 import exceptions.IncompleteRequestException;
 import exceptions.NotAuthorizedException;
 import model.AuthData;

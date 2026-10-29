@@ -7,21 +7,19 @@ import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.AuthService;
-
 import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthServiceTests {
 
-    private final static AuthService AUTH_SERVICE = new AuthService();
+    private static AuthService AUTH_SERVICE = new AuthService();
     private final static UserData BILLY =  new UserData("billy123", "password", "testa@gmail.com" );
     private final static UserData BOB = new UserData("bob1", "pass", "testb@gmail.com");
 
     @AfterEach
     public void clearDB(){
         AUTH_SERVICE.deleteDB();
+        AUTH_SERVICE = new AuthService();
     }
 
     @Test
@@ -60,14 +58,4 @@ public class AuthServiceTests {
         AUTH_SERVICE.logout(billyToken);
         assertThrows(NotAuthorizedException.class, () -> AUTH_SERVICE.authorize(billyToken));
     }
-
-    // todo: this test could be needed to prevent multiple login
-//    @Test
-//    @DisplayName("MultipleLogin")
-//    public void muiltipleLogin() throws IncompleteRequestException {
-//        var billyToken = AUTH_SERVICE.login(billy);
-//        assertTrue(AUTH_SERVICE.authorize(billyToken));
-//        assertThrows(AUTH_SERVICE.login(billy))
-//    }
-
 }

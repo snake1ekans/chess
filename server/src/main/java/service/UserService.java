@@ -1,13 +1,12 @@
 package service;
 
 import dataaccess.*;
+import dataaccess.sql.UserDacSql;
 import exceptions.DataAccessException;
 import exceptions.DataConflictException;
 import exceptions.IncompleteRequestException;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
-
-import java.util.Objects;
 
 public class UserService {
 

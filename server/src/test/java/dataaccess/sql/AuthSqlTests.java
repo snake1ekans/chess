@@ -1,6 +1,5 @@
-package sql;
+package dataaccess.sql;
 
-import dataaccess.AuthDacSql;
 import dataaccess.DatabaseManager;
 import exceptions.DataConflictException;
 import exceptions.DatabaseException;

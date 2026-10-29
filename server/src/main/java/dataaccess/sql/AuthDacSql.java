@@ -1,17 +1,12 @@
-package dataaccess;
+package dataaccess.sql;
 
-import exceptions.DataAccessException;
+import dataaccess.AuthDAC;
+import dataaccess.DatabaseManager;
 import exceptions.DataConflictException;
 import exceptions.DatabaseException;
 import model.AuthData;
-import org.mindrot.jbcrypt.BCrypt;
-
-import java.net.ConnectException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
 import static dataaccess.DatabaseManager.*;
 
 public class AuthDacSql implements AuthDAC {
@@ -55,7 +50,6 @@ public class AuthDacSql implements AuthDAC {
             if (!res.next()) {
                 return false;
             }
-            res.next();
             return (Objects.equals(res.getString("token"), token.authToken()));
         } catch (SQLException e) {
             throw new DatabaseException("CheckToken database failure");

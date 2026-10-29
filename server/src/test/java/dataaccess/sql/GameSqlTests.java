@@ -1,4 +1,4 @@
-package sql;
+package dataaccess.sql;
 
 
 import org.junit.jupiter.api.AfterEach;

@@ -1,5 +1,7 @@
-package dataaccess;
+package dataaccess.sql;
 
+import dataaccess.DatabaseManager;
+import dataaccess.GameDAC;
 import exceptions.DataAccessException;
 import exceptions.DatabaseException;
 import model.GameData;
@@ -12,7 +14,7 @@ import java.util.List;
 
 import static dataaccess.DatabaseManager.getConnection;
 
-public class GameDacSql implements GameDAC{
+public class GameDacSql implements GameDAC {
 
     public GameDacSql() throws DatabaseException {
         DatabaseManager.createDatabase();
@@ -45,7 +47,7 @@ public class GameDacSql implements GameDAC{
         return null;
     }
 
-    public void joinGame(JoinRequestData joinRequestData) throws DataAccessException {
+    public void joinGame(JoinRequestData joinRequestData) {
 
     }
 

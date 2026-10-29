@@ -1,9 +1,9 @@
-package dataaccess;
+package dataaccess.sql;
 
-import exceptions.DataAccessException;
+import dataaccess.DatabaseManager;
+import dataaccess.UserDAC;
 import exceptions.DatabaseException;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
@@ -29,6 +29,7 @@ public class UserDacSql implements UserDAC {
                     password VARCHAR(255) NOT NULL,
                     email VARCHAR(255) NOT NULL,
                     PRIMARY KEY (username));
+                
                 """);
             stat.executeBatch();
         } catch (SQLException s){
@@ -39,7 +40,7 @@ public class UserDacSql implements UserDAC {
 
     public void addUser(UserData data) {
         String hashedPassword = BCrypt.hashpw(data.password(), BCrypt.gensalt());
-        List<String>queries  = new ArrayList<String>();
+        List<String>queries  = new ArrayList<>();
         queries.add("USE chess;");
         queries.add("INSERT INTO users (username, email, password) VALUES ('" + data.username()
                 + "', '" + data.email() + "', '" + hashedPassword + "');");
@@ -63,7 +64,7 @@ public class UserDacSql implements UserDAC {
     public void deleteAll() {
         try (Connection conn = getConnection()){
             Statement stat = conn.createStatement();
-            stat.execute("DROP TABLE users");
+            stat.execute("DROP TABLE users;");
         } catch (SQLException e) {
             throw new DatabaseException("drop users error");
         }
