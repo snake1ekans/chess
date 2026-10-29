@@ -1,6 +1,7 @@
 package dataaccess;
 
 import exceptions.DataAccessException;
+import exceptions.DataConflictException;
 import exceptions.DatabaseException;
 import model.AuthData;
 import org.mindrot.jbcrypt.BCrypt;
@@ -25,7 +26,8 @@ public class AuthDacSql implements AuthDAC {
                     CREATE TABLE IF NOT EXISTS auth(
                         username VARCHAR(255) NOT NULL,
                         token VARCHAR(255) NOT NULL,
-                        PRIMARY KEY (token));
+                        PRIMARY KEY (token),
+                        CONSTRAINT uniqueness UNIQUE (username,token));
                     """);
             stat.executeBatch();
         } catch (SQLException s){
@@ -88,7 +90,10 @@ public class AuthDacSql implements AuthDAC {
                 stat.addBatch(i);
             }
             stat.executeBatch();
-        } catch (SQLException s){
+        } catch (BatchUpdateException s) {
+            throw new DataConflictException("Duplicate value added");
+        } catch
+        (SQLException s){
             throw new DatabaseException("Auth Failure");
         }
     }
