@@ -3,6 +3,7 @@ package sql;
 import dataaccess.AuthDacSql;
 import dataaccess.DatabaseManager;
 import exceptions.DataConflictException;
+import exceptions.DatabaseException;
 import model.AuthData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,8 +27,10 @@ public class AuthSqlTests {
     @BeforeAll
     static public void initializeDatabase(){
         DatabaseManager.createDatabase();
-        try {
+        try (Connection conn = getConnection()) {
             authDac = new AuthDacSql();
+            Statement s = conn.createStatement();
+            s.execute("USE chess;");
         } catch (Exception e) {
             throw new RuntimeException("Database Initialization error. Check your environment and try again.");
         }
@@ -129,5 +132,20 @@ public class AuthSqlTests {
         authDac.deleteToken(user2);
         authDac.deleteToken(user3);
         authDac.deleteToken(user4);
+    }
+
+    @Test
+    @DisplayName("DatabaseFailure")
+    public void failDatabase() {
+        try (Connection conn = getConnection()){
+            Statement stat = conn.createStatement();
+            stat.execute("DROP TABLE auth;");
+        } catch (SQLException e) {
+            throw new RuntimeException("Reinitialization failed.");
+        }
+        assertThrows(DatabaseException.class, () -> authDac.writeToken(user1));
+        assertThrows(DatabaseException.class, () -> authDac.deleteToken(user1));
+        assertThrows(DatabaseException.class, () -> authDac.checkToken(user1));
+        assertThrows(DatabaseException.class, () -> authDac.getUsername(user1));
     }
 }

@@ -30,71 +30,65 @@ public class AuthDacSql implements AuthDAC {
                         CONSTRAINT uniqueness UNIQUE (username,token));
                     """);
             stat.executeBatch();
-        } catch (SQLException s){
+        } catch (SQLException s) {
             throw new DatabaseException("failed to connect");
         }
     }
 
     public void writeToken(AuthData token) {
-        List<String>queries  = new ArrayList<String>();
-        queries.add("USE chess;");
-        queries.add("INSERT INTO auth (username, token) VALUES ('"
-                + token.username() + "', '" + token.authToken() + "');");
-        batcher(queries);
+        try (Connection conn = getConnection()) {
+            Statement stat = conn.createStatement();
+            stat.execute("USE chess;");
+            stat.execute("INSERT INTO auth (username, token) VALUES ('"
+                    + token.username() + "', '" + token.authToken() + "');");
+        } catch (SQLIntegrityConstraintViolationException e){
+            throw new DataConflictException("duplicate attempt");
+        } catch (SQLException e) {
+            throw new DatabaseException("getusername auth database failure");
+        }
     }
 
     public boolean checkToken(AuthData token) {
-        try (Connection conn = getConnection()){
+        try (Connection conn = getConnection()) {
             Statement stat = conn.createStatement();
-            ResultSet res = stat.executeQuery("SELECT * FROM auth WHERE token = '"+token.authToken()+"';");
+            ResultSet res = stat.executeQuery("SELECT * FROM auth WHERE token = '" + token.authToken() + "';");
+            if (!res.next()) {
+                return false;
+            }
             res.next();
-            String userToken = res.getString("token");
-            return (Objects.equals(userToken, token.authToken()));
+            return (Objects.equals(res.getString("token"), token.authToken()));
         } catch (SQLException e) {
-            return false;
+            throw new DatabaseException("CheckToken database failure");
         }
     }
 
     public void deleteToken(AuthData token) {
-        List<String>queries = new ArrayList<>();
-        queries.add("USE chess;");
-        queries.add("DELETE FROM auth WHERE token='" + token.authToken() + "';");
-        batcher(queries);
+        try (Connection conn = getConnection()) {
+            Statement stat = conn.createStatement();
+            stat.execute("USE chess;");
+            stat.execute("DELETE FROM auth WHERE token='" + token.authToken() + "';");
+        } catch (SQLException e) {
+            throw new DatabaseException("getusername auth database failure");
+        }
     }
 
     public String getUsername(AuthData token) {
-        try (Connection conn = getConnection()){
+        try (Connection conn = getConnection()) {
             Statement stat = conn.createStatement();
-            ResultSet res = stat.executeQuery("SELECT * FROM auth WHERE token = '"+token.authToken()+"';");
+            ResultSet res = stat.executeQuery("SELECT * FROM auth WHERE token = '" + token.authToken() + "';");
             res.next();
             return res.getString("username");
         } catch (SQLException e) {
-            return "";
+            throw new DatabaseException("getusername auth database failure");
         }
     }
 
     public void deleteAll() {
-        try (Connection conn = getConnection()){
+        try (Connection conn = getConnection()) {
             Statement stat = conn.createStatement();
-            stat.execute("DROP TABLE auth");
+            stat.execute("DROP TABLE IF EXISTS auth;");
         } catch (SQLException e) {
             throw new DatabaseException("drop auth error");
-        }
-    }
-
-    private void batcher(List<String> queries) throws DatabaseException {
-        try {
-            Connection conn = getConnection();
-            Statement stat = conn.createStatement();
-            for (String i : queries) {
-                stat.addBatch(i);
-            }
-            stat.executeBatch();
-        } catch (BatchUpdateException s) {
-            throw new DataConflictException("Duplicate value added");
-        } catch
-        (SQLException s){
-            throw new DatabaseException("Auth Failure");
         }
     }
 }
