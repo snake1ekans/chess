@@ -134,6 +134,32 @@ public class AuthSqlTests {
     }
 
     @Test
+    @DisplayName("CheckTokenBattery")
+    public void checkTokenFail() {
+        authDac.writeToken(user1);
+        authDac.writeToken(user2);
+        authDac.writeToken(user3);
+
+        assertTrue(authDac.checkToken(user1));
+        assertTrue(authDac.checkToken(user2));
+        assertTrue(authDac.checkToken(user3));
+        assertFalse(authDac.checkToken(user4));
+    }
+
+    @Test
+    @DisplayName("GetUserBattery")
+    public void getUserBattery() {
+        authDac.writeToken(user1);
+        authDac.writeToken(user2);
+        authDac.writeToken(user3);
+
+        assertEquals(authDac.getUsername(user1), user1.username());
+        assertEquals(authDac.getUsername(user2), user2.username());
+        assertEquals(authDac.getUsername(user3), user3.username());
+        assertThrows(DatabaseException.class, ()->authDac.getUsername(user4));
+    }
+
+    @Test
     @DisplayName("DatabaseFailure")
     public void failDatabase() {
         try (Connection conn = getConnection()){
