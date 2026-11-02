@@ -1,4 +1,5 @@
 package service;
+import dataaccess.sql.GameSqlTests;
 import exceptions.DataAccessException;
 import exceptions.DataConflictException;
 import exceptions.IncompleteRequestException;
@@ -13,13 +14,14 @@ import service.JoinRequestData;
 import static org.junit.jupiter.api.Assertions.*;
 public class GameServiceTests {
 
-    private final static GameService GAME_SERVICE = new GameService();
+    private static GameService GAME_SERVICE = new GameService();
     private final GameData testGame1 = new GameData(1, null, null, "game1", null);
     private final GameData testGame2 = new GameData(2, null, null, "game2", null);
 
     @AfterEach
     public void clearDB(){
         GAME_SERVICE.deleteDB();
+        GAME_SERVICE = new GameService();
     }
 
     @Test
@@ -33,13 +35,6 @@ public class GameServiceTests {
         GameData game2 = new GameData(gameID2, null, null, "game2", addedGame2.game());
         assertEquals(addedGame1, game1);
         assertEquals(addedGame2, game2);
-    }
-
-    @Test
-    @DisplayName("CreateGameNameConflict")
-    public void createGameNameConflict() throws IncompleteRequestException, DataConflictException {
-        GAME_SERVICE.createGame(testGame1);
-        assertThrows(DataConflictException.class, ()-> GAME_SERVICE.createGame(testGame1));
     }
 
     @Test

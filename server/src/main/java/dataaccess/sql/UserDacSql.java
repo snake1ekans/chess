@@ -40,7 +40,7 @@ public class UserDacSql implements UserDAC {
         } catch (SQLIntegrityConstraintViolationException e){
             throw new DataConflictException("duplicate user added");
         } catch(SQLException e){
-            throw new DatabaseException("Database Failure");
+            throw new DatabaseException("AddUser Failed");
         }
     }
 
@@ -61,9 +61,9 @@ public class UserDacSql implements UserDAC {
     public void deleteAll() {
         try (Connection conn = getConnection()){
             Statement stat = conn.createStatement();
-            stat.execute("DROP TABLE users;");
+            stat.execute("DROP TABLE IF EXISTS users;");
         } catch (SQLException e) {
-            throw new DatabaseException("drop users error");
+            throw new DatabaseException("Drop Users Failed");
         }
     }
 }

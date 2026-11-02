@@ -56,6 +56,7 @@ public class UserSqlTests {
             throw new RuntimeException("Reinitialization failed.");
         }
     }
+
     @Test
     @DisplayName("AddUsersSuccess")
     public void addUsersSuccess() {

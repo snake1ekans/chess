@@ -4,6 +4,7 @@ import exceptions.DataAccessException;
 import exceptions.DataConflictException;
 import exceptions.IncompleteRequestException;
 import model.UserData;
+import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTests {
 
-    private final static UserService USER_SERVICE = new UserService();
+    private static UserService USER_SERVICE = new UserService();
     private final static UserData BILLY =  new UserData("BILLY123", "password", "testa@gmail.com" );
     private final static UserData BOB = new UserData("BOB1", "pass", "testb@gmail.com");
     private final static UserData JOE = new UserData("joseph", "sampletext", "testc@gmail.com" );
@@ -22,6 +23,7 @@ public class UserServiceTests {
     @AfterEach
     public void clearDB(){
         USER_SERVICE.deleteDB();
+        USER_SERVICE = new UserService();
     }
 
     @Test
@@ -46,8 +48,8 @@ public class UserServiceTests {
         USER_SERVICE.register(BILLY);
         assertThrows(DataConflictException.class, () ->{USER_SERVICE.register(BILLY);});
         USER_SERVICE.register(BOB);
-        assertThrows(DataConflictException.class, () ->{USER_SERVICE.register(BILLY);});
-        assertThrows(DataConflictException.class, () ->{USER_SERVICE.register(BOB);});
+        assertThrows(DataConflictException.class, () ->USER_SERVICE.register(BILLY));
+        assertThrows(DataConflictException.class, () ->USER_SERVICE.register(BOB));
     }
 
     @Test
