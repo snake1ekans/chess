@@ -23,7 +23,6 @@ public class AuthSqlTests {
     AuthData user3 = new AuthData("user3", "3");
     AuthData user4 = new AuthData("user4", "4");
 
-
     public AuthSqlTests() {
         DatabaseManager.createDatabase();
         try (Connection conn = getConnection()) {
