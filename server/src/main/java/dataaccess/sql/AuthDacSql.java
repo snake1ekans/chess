@@ -16,7 +16,6 @@ public class AuthDacSql implements AuthDAC {
         try {
             Connection conn = getConnection();
             Statement stat = conn.createStatement();
-            stat.addBatch("USE chess;");
             stat.addBatch("""
                     CREATE TABLE IF NOT EXISTS auth(
                         username VARCHAR(255) NOT NULL,
@@ -58,7 +57,6 @@ public class AuthDacSql implements AuthDAC {
     public void deleteToken(AuthData token) {
         try (Connection conn = getConnection()) {
             Statement stat = conn.createStatement();
-            stat.execute("USE chess;");
             stat.execute("DELETE FROM auth WHERE token='" + token.authToken() + "';");
         } catch (SQLException e) {
             throw new DatabaseException("getusername auth database failure");
