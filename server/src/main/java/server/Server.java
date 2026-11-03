@@ -171,7 +171,6 @@ public class Server {
         context.status(400);
         context.result(new Gson().toJson(Map.of("message", "error: bad request")));
     }
-
     private void unauthorizedHelper(Context context) {
         context.contentType("application/json");
         context.status(401);

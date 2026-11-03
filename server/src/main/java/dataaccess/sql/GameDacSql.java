@@ -24,7 +24,6 @@ public class GameDacSql implements GameDAC {
         DatabaseManager.createDatabase();
         try (Connection conn = getConnection()){
             Statement stat = conn.createStatement();
-            stat.addBatch("USE chess");
             stat.addBatch("""
                     CREATE TABLE IF NOT EXISTS games(
                         id INT NOT NULL,

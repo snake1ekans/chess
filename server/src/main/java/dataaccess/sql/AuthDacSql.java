@@ -33,7 +33,6 @@ public class AuthDacSql implements AuthDAC {
     public void writeToken(AuthData token) {
         try (Connection conn = getConnection()) {
             Statement stat = conn.createStatement();
-            stat.execute("USE chess;");
             stat.execute("INSERT INTO auth (username, token) VALUES ('"
                     + token.username() + "', '" + token.authToken() + "');");
         } catch (SQLIntegrityConstraintViolationException e){
