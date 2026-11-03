@@ -87,7 +87,7 @@ public class GameSqlTests {
     @Test
     @DisplayName("EmptyGames")
     public void listGamesEmpty() {
-        assertNull(gameDac.listGames());
+        assertEquals(new ArrayList<>(), gameDac.listGames());
     }
 
     @Test

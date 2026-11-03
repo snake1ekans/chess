@@ -71,7 +71,7 @@ public class GameDacSql implements GameDAC {
             Statement stat = conn.createStatement();
             ResultSet query = stat.executeQuery("SELECT * FROM games;");
             if(!query.next()){
-                return null;
+                return returnlist;
             }
             do {
                 returnlist.add(new GameData(query.getInt("id"), query.getString("whiteUsername"),
