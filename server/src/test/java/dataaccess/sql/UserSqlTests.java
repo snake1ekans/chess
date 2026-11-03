@@ -1,6 +1,5 @@
 package dataaccess.sql;
 
-import com.mysql.cj.protocol.Resultset;
 import dataaccess.DatabaseManager;
 import exceptions.DataConflictException;
 import exceptions.DatabaseException;
@@ -8,8 +7,6 @@ import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -107,6 +104,8 @@ public class UserSqlTests {
             throw new RuntimeException("Reinitialization failed.");
         }
         assertThrows(DatabaseException.class, () -> userDac.addUser(user1));
+        assertThrows(DatabaseException.class, () -> userDac.deleteAll());
+
         try (Connection conn = getConnection()){
             Statement stat = conn.createStatement();
             stat.execute("""

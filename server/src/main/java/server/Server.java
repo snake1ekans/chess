@@ -1,10 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import exceptions.DataAccessException;
-import exceptions.DataConflictException;
-import exceptions.IncompleteRequestException;
-import exceptions.NotAuthorizedException;
+import exceptions.*;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.AuthData;
@@ -75,6 +72,8 @@ public class Server {
              context.result(new Gson().toJson(Map.of("message", "error: already taken")));
          } catch (IncompleteRequestException missing_data) {
             badRequestHelper(context);
+         } catch (DatabaseException n ) {
+             serverErrorHelper(context);
          }
     }
     private void loginHandler(Context context) throws DataConflictException {
@@ -89,6 +88,8 @@ public class Server {
             badRequestHelper(context);
         } catch (DataConflictException | DataAccessException badData) {
             unauthorizedHelper(context);
+        } catch (DatabaseException n ) {
+            serverErrorHelper(context);
         }
     }
     private void logoutHandler(Context context){
@@ -99,6 +100,8 @@ public class Server {
             context.status(200);
         } catch (NotAuthorizedException | IncompleteRequestException n) {
             unauthorizedHelper(context);
+        } catch (DatabaseException n ) {
+            serverErrorHelper(context);
         }
     }
     private void createHandler(Context context){
@@ -113,6 +116,8 @@ public class Server {
             unauthorizedHelper(context);
         } catch (IncompleteRequestException missingData) {
             badRequestHelper(context);
+        } catch (DatabaseException n ) {
+            serverErrorHelper(context);
         }
     }
     private void joinHandler(Context context) throws NotAuthorizedException {
@@ -130,6 +135,8 @@ public class Server {
         } catch (DataConflictException n) {
             context.status(403);
             context.result(new Gson().toJson(Map.of("message", "error: already taken")));
+        } catch (DatabaseException n){
+            serverErrorHelper(context);
         }
     }
     private void listHandler(Context context){
@@ -143,12 +150,18 @@ public class Server {
             unauthorizedHelper(context);
         } catch (IncompleteRequestException missingData) {
             badRequestHelper(context);
+        } catch (DatabaseException n ) {
+            serverErrorHelper(context);
         }
     }
     private void clearHandler(Context context){
-        authService.deleteDB();
-        userService.deleteDB();
-        gameService.deleteDB();
+        try {
+            authService.deleteDB();
+            userService.deleteDB();
+            gameService.deleteDB();
+        } catch (DatabaseException n ) {
+            serverErrorHelper(context);
+        }
     }
 
     // ---------- Helpers ----------
@@ -163,5 +176,12 @@ public class Server {
         context.contentType("application/json");
         context.status(401);
         context.result(new Gson().toJson(Map.of("message", "error: unauthorized")));
+    }
+
+    private void serverErrorHelper(Context context) {
+        context.contentType("application/json");
+        context.status(500);
+        context.result(new Gson().toJson(Map.of("message", "Internal Server Error. Please reload or check your connection.")));
+
     }
 }

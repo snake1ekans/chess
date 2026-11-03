@@ -10,7 +10,6 @@ import exceptions.DatabaseException;
 import model.GameData;
 import service.JoinRequestData;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.*;
 
@@ -19,7 +18,7 @@ import static dataaccess.DatabaseManager.getConnection;
 public class GameDacSql implements GameDAC {
 
     private static final int MAX_GAMES = 9999;
-    ArrayList<Integer> USED_IDS = new ArrayList<>();
+    ArrayList<Integer> usedIds = new ArrayList<>();
 
     public GameDacSql() throws DatabaseException {
         DatabaseManager.createDatabase();
@@ -32,7 +31,7 @@ public class GameDacSql implements GameDAC {
                         whiteUsername VARCHAR(255),
                         blackUsername VARCHAR(255),
                         gameName VARCHAR(255),
-                        game TEXT,
+                        game VARCHAR(2048),
                         PRIMARY KEY (id));
                     """);
             stat.executeBatch();
@@ -46,17 +45,20 @@ public class GameDacSql implements GameDAC {
         Integer gameID;
         while (true) {
             gameID = rng.nextInt(MAX_GAMES);
-            if (!USED_IDS.contains(gameID)){
-                USED_IDS.add(gameID);
+            if (!usedIds.contains(gameID)){
+                usedIds.add(gameID);
                 break;
             }
         }
         var serializer = new Gson();
         var gameJSON = serializer.toJson(new ChessGame());
         try (Connection conn = getConnection()){
-            Statement stat = conn.createStatement();
-            stat.execute("INSERT INTO games (id, gameName, game) VALUES ('" + gameID +
-                    "', '" + gameName + "', '" + gameJSON + "');");
+            String s = "INSERT INTO games (id, gameName, game) VALUES (?, ?, ?);";
+            var stat = conn.prepareStatement(s);
+            stat.setInt(1, gameID);
+            stat.setString(2, gameName);
+            stat.setString(3, gameJSON);
+            stat.execute();
             return gameID;
         } catch(SQLException e){
             throw new DatabaseException("create game database failure");
@@ -69,7 +71,7 @@ public class GameDacSql implements GameDAC {
             Statement stat = conn.createStatement();
             ResultSet query = stat.executeQuery("SELECT * FROM games;");
             if(!query.next()){
-                return returnlist;
+                return null;
             }
             do {
                 returnlist.add(new GameData(query.getInt("id"), query.getString("whiteUsername"),
@@ -100,8 +102,13 @@ public class GameDacSql implements GameDAC {
 
     public void joinGame(JoinRequestData joinRequestData) throws DataAccessException {
         try (Connection conn = getConnection()){
-            Statement stat = conn.createStatement();
-            ResultSet res = stat.executeQuery("SELECT * FROM games WHERE id = " + joinRequestData.gameID() + ";");
+            if (joinRequestData.gameID() == null) {
+                throw new DataAccessException("bad id");
+            }
+            String s = "SELECT * FROM games WHERE id = (?);";
+            var stat = conn.prepareStatement(s);
+            stat.setInt(1, joinRequestData.gameID());
+            var res = stat.executeQuery();
             if (!res.next()){
                 throw new DataAccessException("Game Id Not Found");
             } else if (((Objects.equals(joinRequestData.playerColor(), "WHITE") && res.getString("whiteUsername") != null))

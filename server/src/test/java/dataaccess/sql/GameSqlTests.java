@@ -2,11 +2,14 @@ package dataaccess.sql;
 
 import chess.ChessGame;
 import dataaccess.DatabaseManager;
+import exceptions.DataAccessException;
+import exceptions.DataConflictException;
 import exceptions.DatabaseException;
 import model.GameData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import service.JoinRequestData;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -84,10 +87,70 @@ public class GameSqlTests {
     @Test
     @DisplayName("EmptyGames")
     public void listGamesEmpty() {
-        List<GameData> idList = gameDac.listGames();
-
+        assertNull(gameDac.listGames());
     }
 
+    @Test
+    @DisplayName("GetGameTest")
+    public void getGame() {
+        assertNull(gameDac.getGame(1));
+        Integer id = gameDac.createGame(game1);
+        GameData comparisonGame = new GameData(id, null, null, game1, new ChessGame());
+        assertEquals(comparisonGame, gameDac.getGame(id));
+        assertNull(gameDac.getGame(100000));
+    }
+
+    @Test
+    @DisplayName("JoinGameNormal")
+    public void joinGameNormal() throws DataAccessException {
+        Integer id1 = gameDac.createGame(game1);
+        Integer id2 = gameDac.createGame(game2);
+        Integer id3 = gameDac.createGame(game3);
+
+        gameDac.joinGame(new JoinRequestData(id1, "BLACK", "user1"));
+        gameDac.joinGame(new JoinRequestData(id2, "BLACK", "user2"));
+        gameDac.joinGame(new JoinRequestData(id3, "BLACK", "user3"));
+        gameDac.joinGame(new JoinRequestData(id1, "WHITE", "user5"));
+        gameDac.joinGame(new JoinRequestData(id2, "WHITE", "user4"));
+
+        assertEquals(gameDac.getGame(id1), new GameData(id1, "user5", "user1", game1, new ChessGame()));
+        assertEquals(gameDac.getGame(id2), new GameData(id2, "user4", "user2", game2, new ChessGame()));
+        assertEquals(gameDac.getGame(id3), new GameData(id3, null, "user3", game3, new ChessGame()));
+    }
+
+    @Test
+    @DisplayName("JoinGameDoesntExist")
+    public void joinGameNoGame() throws DataAccessException {
+        Integer id1 = gameDac.createGame(game1);
+        Integer id2 = gameDac.createGame(game2);
+        gameDac.joinGame(new JoinRequestData(id1, "BLACK", "user1"));
+        gameDac.joinGame(new JoinRequestData(id2, "BLACK", "user2"));
+
+        assertThrows(DataAccessException.class, () ->
+                gameDac.joinGame(new JoinRequestData(10000, "BLACK", "user3")));
+        assertThrows(DataAccessException.class, () ->
+                gameDac.joinGame(new JoinRequestData(null, "BLACK", "user3")));
+        assertEquals(gameDac.getGame(id1), new GameData(id1, null, "user1", game1, new ChessGame()));
+        assertEquals(gameDac.getGame(id2), new GameData(id2, null, "user2", game2, new ChessGame()));
+    }
+
+    @Test
+    @DisplayName("JoinGameSlotConflict")
+    public void joinGameConflict() throws DataAccessException {
+        Integer id1 = gameDac.createGame(game1);
+        Integer id2 = gameDac.createGame(game2);
+        gameDac.joinGame(new JoinRequestData(id1, "BLACK", "user1"));
+        gameDac.joinGame(new JoinRequestData(id2, "WHITE", "user2"));
+
+        assertThrows(DataConflictException.class, () ->
+                gameDac.joinGame(new JoinRequestData(id1, "BLACK", "user3")));
+        assertThrows(DataConflictException.class, () ->
+                gameDac.joinGame(new JoinRequestData(id2, "WHITE", "user3")));
+
+        gameDac.joinGame(new JoinRequestData(id2, "BLACK", "user4"));
+        assertThrows(DataConflictException.class, () ->
+                gameDac.joinGame(new JoinRequestData(id2, "BLACK", "user3")));
+    }
 
 
     @Test
@@ -99,7 +162,11 @@ public class GameSqlTests {
         } catch (SQLException e) {
             throw new RuntimeException("Reinitialization failed.");
         }
+
         assertThrows(DatabaseException.class, () -> gameDac.createGame(game1));
+        assertThrows(DatabaseException.class, () -> gameDac.getGame(1000));
+        assertThrows(DatabaseException.class, () -> gameDac.joinGame(new JoinRequestData(1, "BLACK", "user")));
+        assertThrows(DatabaseException.class, () -> gameDac.deleteAll());
         assertNull(gameDac.listGames());
 
         try (Connection conn = getConnection()){
@@ -116,13 +183,5 @@ public class GameSqlTests {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Test
-    @DisplayName("GetGameTest")
-    public void getGame() {
-        Integer id = gameDac.createGame(game1);
-        GameData comparisonGame = new GameData(id, null, null, game1, new ChessGame());
-        assertEquals(comparisonGame, gameDac.getGame(id));
     }
 }
