@@ -5,7 +5,6 @@ import exceptions.DataConflictException;
 import exceptions.DatabaseException;
 import model.AuthData;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.sql.Connection;
@@ -22,6 +21,7 @@ public class AuthSqlTests {
     AuthData user2 = new AuthData("user2", "2");
     AuthData user3 = new AuthData("user3", "3");
     AuthData user4 = new AuthData("user4", "4");
+
 
     public AuthSqlTests() {
         DatabaseManager.createDatabase();
@@ -157,6 +157,8 @@ public class AuthSqlTests {
         assertThrows(DatabaseException.class, () -> authDac.deleteToken(user1));
         assertThrows(DatabaseException.class, () -> authDac.checkToken(user1));
         assertThrows(DatabaseException.class, () -> authDac.getUsername(user1));
+        assertThrows(DatabaseException.class, () -> authDac.deleteAll());
+
         authDac = new AuthDacSql();
     }
 }
