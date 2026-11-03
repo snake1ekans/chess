@@ -177,7 +177,6 @@ public class Server {
         context.status(401);
         context.result(new Gson().toJson(Map.of("message", "error: unauthorized")));
     }
-
     private void serverErrorHelper(Context context) {
         context.contentType("application/json");
         context.status(500);
