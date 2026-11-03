@@ -80,7 +80,7 @@ public class AuthDacSql implements AuthDAC {
     public void deleteAll() {
         try (Connection conn = getConnection()) {
             Statement stat = conn.createStatement();
-            stat.execute("DROP TABLE IF EXISTS auth;");
+            stat.execute("TRUNCATE TABLE auth;");
         } catch (SQLException e) {
             throw new DatabaseException("drop auth error");
         }

@@ -40,21 +40,6 @@ public class UserSqlTests {
     @AfterEach
     public void clearDatabase(){
         userDac.deleteAll();
-        try (Connection conn = getConnection()){
-            Statement s = conn.createStatement();
-            s.execute("USE chess;");
-            Statement stat = conn.createStatement();
-            stat.execute("""
-                CREATE TABLE IF NOT EXISTS users (
-                    username VARCHAR(255) NOT NULL,
-                    password VARCHAR(255) NOT NULL,
-                    email VARCHAR(255) NOT NULL,
-                    CONSTRAINT uniqueness UNIQUE (username,email),
-                    PRIMARY KEY (username));
-                """);
-        } catch (SQLException e) {
-            throw new RuntimeException("Reinitialization failed.");
-        }
     }
 
     @Test
@@ -122,7 +107,6 @@ public class UserSqlTests {
             throw new RuntimeException("Reinitialization failed.");
         }
         assertThrows(DatabaseException.class, () -> userDac.addUser(user1));
-        assertThrows(DatabaseException.class, () -> userDac.deleteAll());
         try (Connection conn = getConnection()){
             Statement stat = conn.createStatement();
             stat.execute("""

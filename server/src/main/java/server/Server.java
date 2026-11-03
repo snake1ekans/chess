@@ -14,11 +14,8 @@ import service.AuthService;
 import service.GameService;
 import service.JoinRequestData;
 import service.UserService;
-
 import java.util.List;
 import java.util.Map;
-
-// todo: questions: how to get the specific objects the API tests are looking for? How to know code coverage for tests?
 
 public class Server {
 
@@ -43,15 +40,20 @@ public class Server {
         javalin.delete("/db", this::clearHandler);
 
         //start services at server instantiation
-        authService = new AuthService();
-        gameService = new GameService();
-        userService = new UserService();
+        try {
+            authService = new AuthService();
+            gameService = new GameService();
+            userService = new UserService();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int run(int desiredPort) {
         javalin.start(desiredPort);
         return javalin.port();
     }
+
     public void stop() {
         javalin.stop();
     }
@@ -75,7 +77,7 @@ public class Server {
             badRequestHelper(context);
          }
     }
-    private void loginHandler(Context context) throws IncompleteRequestException, DataAccessException, DataConflictException {
+    private void loginHandler(Context context) throws DataConflictException {
         UserData requestData = new Gson().fromJson(context.body(), UserData.class);
         try {
             userService.login(requestData);
@@ -147,7 +149,6 @@ public class Server {
         authService.deleteDB();
         userService.deleteDB();
         gameService.deleteDB();
-
     }
 
     // ---------- Helpers ----------

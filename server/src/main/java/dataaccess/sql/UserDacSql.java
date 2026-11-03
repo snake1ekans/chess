@@ -61,7 +61,7 @@ public class UserDacSql implements UserDAC {
     public void deleteAll() {
         try (Connection conn = getConnection()){
             Statement stat = conn.createStatement();
-            stat.execute("DROP TABLE IF EXISTS users;");
+            stat.execute("TRUNCATE TABLE users;");
         } catch (SQLException e) {
             throw new DatabaseException("Drop Users Failed");
         }

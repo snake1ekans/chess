@@ -23,8 +23,8 @@ public class AuthSqlTests {
     AuthData user3 = new AuthData("user3", "3");
     AuthData user4 = new AuthData("user4", "4");
 
-    @BeforeAll
-    static public void initializeDatabase(){
+
+    public AuthSqlTests() {
         DatabaseManager.createDatabase();
         try (Connection conn = getConnection()) {
             authDac = new AuthDacSql();
@@ -38,20 +38,6 @@ public class AuthSqlTests {
     @AfterEach
     public void clearDatabase(){
         authDac.deleteAll();
-        try (Connection conn = getConnection()){
-            Statement s = conn.createStatement();
-            s.execute("USE chess;");
-            Statement stat = conn.createStatement();
-            stat.execute("""
-                CREATE TABLE IF NOT EXISTS auth(
-                    username VARCHAR(255) NOT NULL,
-                    token VARCHAR(255) NOT NULL,
-                    PRIMARY KEY (token),
-                    CONSTRAINT uniqueness UNIQUE (username,token));
-                """);
-        } catch (SQLException e) {
-            throw new RuntimeException("Reinitialization failed.");
-        }
     }
 
     @Test
@@ -172,5 +158,6 @@ public class AuthSqlTests {
         assertThrows(DatabaseException.class, () -> authDac.deleteToken(user1));
         assertThrows(DatabaseException.class, () -> authDac.checkToken(user1));
         assertThrows(DatabaseException.class, () -> authDac.getUsername(user1));
+        authDac = new AuthDacSql();
     }
 }

@@ -1,5 +1,6 @@
 package dataaccess.sql;
 
+import chess.ChessGame;
 import dataaccess.DatabaseManager;
 import exceptions.DatabaseException;
 import model.GameData;
@@ -35,22 +36,6 @@ public class GameSqlTests {
     @AfterEach
     public void clearDatabase(){
         gameDac.deleteAll();
-        try (Connection conn = getConnection()){
-            Statement s = conn.createStatement();
-            s.execute("USE chess;");
-            Statement stat = conn.createStatement();
-            stat.execute("""
-                CREATE TABLE IF NOT EXISTS games(
-                    id INT NOT NULL AUTO_INCREMENT,
-                    whiteUsername VARCHAR(255),
-                    blackUsername VARCHAR(255),
-                    gameName VARCHAR(255),
-                    game TEXT,
-                    PRIMARY KEY (id));
-                """);
-        } catch (SQLException e) {
-            throw new RuntimeException("Reinitialization failed.");
-        }
     }
 
     @Test
@@ -97,6 +82,15 @@ public class GameSqlTests {
     }
 
     @Test
+    @DisplayName("EmptyGames")
+    public void listGamesEmpty() {
+        List<GameData> idList = gameDac.listGames();
+
+    }
+
+
+
+    @Test
     @DisplayName("DatabaseFailure")
     public void failDatabase() {
         try (Connection conn = getConnection()){
@@ -108,5 +102,27 @@ public class GameSqlTests {
         assertThrows(DatabaseException.class, () -> gameDac.createGame(game1));
         assertNull(gameDac.listGames());
 
+        try (Connection conn = getConnection()){
+            Statement stat = conn.createStatement();
+            stat.execute("""
+                CREATE TABLE IF NOT EXISTS games(
+                    id INT NOT NULL AUTO_INCREMENT,
+                    whiteUsername VARCHAR(255),
+                    blackUsername VARCHAR(255),
+                    gameName VARCHAR(255),
+                    game TEXT,
+                    PRIMARY KEY (id));
+                """);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    @DisplayName("GetGameTest")
+    public void getGame() {
+        Integer id = gameDac.createGame(game1);
+        GameData comparisonGame = new GameData(id, null, null, game1, new ChessGame());
+        assertEquals(comparisonGame, gameDac.getGame(id));
     }
 }

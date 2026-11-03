@@ -10,7 +10,6 @@ import model.GameData;
 import java.util.List;
 import java.util.Objects;
 
-//todo: create tests for these functions
 public class GameService {
 
     GameDAC dataAccess;
