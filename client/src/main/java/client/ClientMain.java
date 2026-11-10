@@ -60,6 +60,7 @@ public class ClientMain {
                 } catch (Exception e) {
                     System.out.println("Server Error. Please restart.");
                 }
+            // register command code
             } else if (Objects.equals(input[0], "register")) {
                 System.out.println("Attempting to register " + input[1] + " as a new user. Please wait.");
                 try {
