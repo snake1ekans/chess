@@ -1,10 +1,79 @@
 package client;
 
 import chess.*;
+import ui.Renderer;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ClientMain {
-    public static void main(String[] args) {
-        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-        System.out.println("♕ 240 Chess Client: " + piece);
+
+    public static ServerFacade facade = new ServerFacade();
+    public static Renderer renderer = new Renderer();
+    public enum States {
+        NO_LOGIN, LOGGED_IN, GAMEPLAY
     }
+    public static HashMap<Pattern, String> VALID_COMMANDS;
+
+    private static void initializeCommands(){
+        VALID_COMMANDS = new HashMap<>();
+        VALID_COMMANDS.put(Pattern.compile("^help|^h", Pattern.CASE_INSENSITIVE), "help");
+        VALID_COMMANDS.put(Pattern.compile("^quit|^q$", Pattern.CASE_INSENSITIVE), "quit");
+        VALID_COMMANDS.put(Pattern.compile("^login", Pattern.CASE_INSENSITIVE), "login");
+        VALID_COMMANDS.put(Pattern.compile("^register", Pattern.CASE_INSENSITIVE), "register");
+        VALID_COMMANDS.put(Pattern.compile("^logout", Pattern.CASE_INSENSITIVE), "logout");
+        VALID_COMMANDS.put(Pattern.compile("^create|^create game", Pattern.CASE_INSENSITIVE), "create");
+        VALID_COMMANDS.put(Pattern.compile("^list|^list game|^list games", Pattern.CASE_INSENSITIVE), "list");
+        VALID_COMMANDS.put(Pattern.compile("^play|^play game", Pattern.CASE_INSENSITIVE), "play");
+        VALID_COMMANDS.put(Pattern.compile("^observe|^observe game", Pattern.CASE_INSENSITIVE), "observe");
+    }
+
+
+
+    public static void main(String[] args) throws IOException {
+        States userState = States.NO_LOGIN;
+        initializeCommands();
+        renderer.introString();
+        while (userState == States.NO_LOGIN) {
+            String[] input = readInput();
+            if (Objects.equals(input[0], "help")){
+                renderer.help(userState);
+            }
+        }
+
+
+    }
+
+    // todo: identify where exception could be thrown
+    private static String[] readInput() throws IOException {
+        //Read Input
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String input = reader.readLine();
+
+        //Convert to ArgsVector
+        for (HashMap.Entry<Pattern, String> entry: VALID_COMMANDS.entrySet()){
+            try {
+                Matcher matcher = entry.getKey().matcher(input);
+                while (matcher.find()){
+                    if (matcher.start() == 0 || matcher.start() == 1){
+                        String[] splitInput = input.split(" ");
+                        String[] inputConversion = new String[splitInput.length];
+                        inputConversion[0] = entry.getValue();
+                        System.arraycopy(splitInput, 1, inputConversion, 1, splitInput.length-1);
+                        return inputConversion;
+                    }
+                }
+            } catch (IllegalStateException n){
+                continue;
+            }
+        }
+        // invalid command
+        String[] inputConversion = new String[1];
+        return inputConversion;
+    }
+
+
 }
