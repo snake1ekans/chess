@@ -34,18 +34,32 @@ public class ClientMain {
 
 
     public static void main(String[] args) throws IOException {
-        States userState = States.NO_LOGIN;
+        States userState = States.LOGGED_IN;
         initializeCommands();
         renderer.introString();
         while (userState == States.NO_LOGIN) {
             String[] input = readInput();
             if (Objects.equals(input[0], "help")){
                 renderer.help(userState);
+            } else if (Objects.equals(input[0], "quit")){
+
+//                ServerFacade.quitClient(0)
+            }
+
+        }
+        while (userState == States.LOGGED_IN) {
+            String[] input = readInput();
+            if (Objects.equals(input[0], "help")){
+                renderer.help(userState);
+            } else if (Objects.equals(input[0], "quit")){
+
             }
         }
 
 
     }
+
+
 
     // todo: identify where exception could be thrown
     private static String[] readInput() throws IOException {
@@ -71,9 +85,6 @@ public class ClientMain {
             }
         }
         // invalid command
-        String[] inputConversion = new String[1];
-        return inputConversion;
+        return new String[1];
     }
-
-
 }
