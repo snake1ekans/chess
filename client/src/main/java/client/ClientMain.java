@@ -29,21 +29,44 @@ public class ClientMain {
         VALID_COMMANDS.put(Pattern.compile("^list|^list game|^list games", Pattern.CASE_INSENSITIVE), "list");
         VALID_COMMANDS.put(Pattern.compile("^play|^play game", Pattern.CASE_INSENSITIVE), "play");
         VALID_COMMANDS.put(Pattern.compile("^observe|^observe game", Pattern.CASE_INSENSITIVE), "observe");
+        VALID_COMMANDS.put(Pattern.compile("^y|^yes", Pattern.CASE_INSENSITIVE), "confirm");
     }
 
 
 
     public static void main(String[] args) throws IOException {
-        States userState = States.LOGGED_IN;
+        States userState = States.NO_LOGIN;
+
         initializeCommands();
         renderer.introString();
         while (userState == States.NO_LOGIN) {
             String[] input = readInput();
+            //help comand code
             if (Objects.equals(input[0], "help")){
                 renderer.help(userState);
+            //quit command code
             } else if (Objects.equals(input[0], "quit")){
-
-//                ServerFacade.quitClient(0)
+                System.out.println("Are you sure you would like to quit? [Yes | No]");
+                String in = readInput()[0];
+                if (Objects.equals(in, "confirm")){
+                    //todo: this may be a bit inelegant, figure out if there's more that needs to be done
+                    System.exit(0);
+                }
+           //login command code
+            } else if (Objects.equals(input[0], "login")) {
+                System.out.println("Attempting to login " + input[1] + ". Please wait.");
+                try {
+                    facade.login(input);
+                } catch (Exception e) {
+                    System.out.println("Server Error. Please restart.");
+                }
+            } else if (Objects.equals(input[0], "register")) {
+                System.out.println("Attempting to register " + input[1] + " as a new user. Please wait.");
+                try {
+                    facade.register(input);
+                } catch (Exception e) {
+                    System.out.println("Server Error. Please restart.");
+                }
             }
 
         }
