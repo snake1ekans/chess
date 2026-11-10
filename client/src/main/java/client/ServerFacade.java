@@ -16,11 +16,8 @@ public class ServerFacade {
 
 // quits the game, with the "depth" determining the actions that are needed
 // based on the level of the user (determined at time of call)
-    public void quitClient(int depth){
 
-    }
-
-    public void register(String[] args) throws Exception {
+    public boolean register(String[] args) throws Exception {
         if (args.length != 4){
             System.out.println("Missing information. Please reenter information and try again.");
         }
@@ -35,18 +32,25 @@ public class ServerFacade {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() == 500) {
             System.out.println("Server Error. Please try again.");
+            return false;
         } else if (response.statusCode() == 400) {
-            System.out.println("Missing information. Please reenter information and try again.");
+            System.out.println("Missing Information. Please reenter information and try again.");
+            return false;
         } else if (response.statusCode()== 403) {
             System.out.println("A user with that name already exists. Please use a different username or login.");
+            return false;
         } else if (response.statusCode() == 200) {
             authData = new Gson().fromJson(response.body(), AuthData.class);
-            System.out.println("Registered Successfully. You are logged in. Please create or Join a Game.");
+            System.out.println("Registered Successfully. You are logged in. Please create or join a Game.");
+            return true;
         }
+        return false;
     }
 
-
-    public void login(String[] args) throws Exception {
+    public boolean login(String[] args) throws Exception {
+        if (args.length < 3){
+            System.out.println("Missing Information. Please reenter information and try again.");
+        }
         UserData register = new UserData(args[1], args[2], null);
         var JsonBody = new Gson().toJson(register);
         String urlstring = "http://localhost:8080/session";
@@ -58,6 +62,45 @@ public class ServerFacade {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() == 500) {
             System.out.println("Server Error. Please try again.");
+            return false;
+        } else if (response.statusCode() == 400) {
+            System.out.println("Missing Information. Please reenter information and try again.");
+            return false;
+        } else if (response.statusCode() == 401) {
+            System.out.println("Username or Password is incorrect. Please reenter information and try again.");
+            return false;
+        } else if (response.statusCode() == 200) {
+            authData = new Gson().fromJson(response.body(), AuthData.class);
+            System.out.println("Logged in Successfully. Please create or join a Game.");
+            return true;
         }
+        return false;
+    }
+
+    public boolean logout() throws Exception {
+        System.out.println("Missing Information. Please reenter information and try again.");
+        String urlstring = "http://localhost:8080/session";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(urlstring))
+                .DELETE()
+                .header("Content-Type", "application/json")
+                .header("Authorization", authData.authToken())
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 500) {
+            System.out.println("Server Error. Please try again.");
+            return false;
+        } else if (response.statusCode() == 400) {
+            System.out.println("Missing Information. Please reenter information and try again.");
+            return false;
+        } else if (response.statusCode() == 401) {
+            System.out.println("Username or Password is incorrect. Please reenter information and try again.");
+            return false;
+        } else if (response.statusCode() == 200) {
+            authData = new Gson().fromJson(response.body(), AuthData.class);
+            System.out.println("Logged in Successfully. Please create or join a Game.");
+            return true;
+        }
+        return false;
     }
 }

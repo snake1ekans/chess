@@ -34,16 +34,18 @@ public class ClientMain {
 
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         States userState = States.NO_LOGIN;
-
         initializeCommands();
         renderer.introString();
+
         while (userState == States.NO_LOGIN) {
             String[] input = readInput();
-            //help comand code
+
+            //help command code
             if (Objects.equals(input[0], "help")){
                 renderer.help(userState);
+
             //quit command code
             } else if (Objects.equals(input[0], "quit")){
                 System.out.println("Are you sure you would like to quit? [Yes | No]");
@@ -52,19 +54,25 @@ public class ClientMain {
                     //todo: this may be a bit inelegant, figure out if there's more that needs to be done
                     System.exit(0);
                 }
+
            //login command code
             } else if (Objects.equals(input[0], "login")) {
                 System.out.println("Attempting to login " + input[1] + ". Please wait.");
                 try {
-                    facade.login(input);
+                    if (facade.login(input)){
+                        userState = States.LOGGED_IN;
+                    }
                 } catch (Exception e) {
                     System.out.println("Server Error. Please restart.");
                 }
+
             // register command code
             } else if (Objects.equals(input[0], "register")) {
                 System.out.println("Attempting to register " + input[1] + " as a new user. Please wait.");
                 try {
-                    facade.register(input);
+                    if (facade.register(input)) {
+                        userState = States.LOGGED_IN;
+                    }
                 } catch (Exception e) {
                     System.out.println("Server Error. Please restart.");
                 }
@@ -76,6 +84,19 @@ public class ClientMain {
             if (Objects.equals(input[0], "help")){
                 renderer.help(userState);
             } else if (Objects.equals(input[0], "quit")){
+                System.out.println("Are you sure you would like to quit? [Yes | No]");
+                String in = readInput()[0];
+                if (Objects.equals(in, "confirm")){
+                    try {
+                        if (facade.logout()) {
+                            userState = States.NO_LOGIN;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Server Error. Please restart.");
+                    }
+                }
+            } else if (Objects.equals(input[0], "logout")){
+                System.out.println("Logging out.");
 
             }
         }
