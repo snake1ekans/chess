@@ -1,13 +1,18 @@
 package client;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -124,5 +129,27 @@ public class ServerFacade {
             var gameId = new Gson().fromJson(response.body(), Map.class);
             System.out.printf("Game '%s' created with ID : %.0f. Join the game to play.\n", game.gameName(), gameId.get("gameID"));
         }
+    }
+
+    public List<GameData> list() throws Exception {
+        String urlstring = "http://localhost:8080/game";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(urlstring))
+                .GET()
+                .header("Authorization", authData.authToken())
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 500) {
+            System.out.println("Server Error. Please try again.");
+        } else if (response.statusCode() == 400) {
+            System.out.println("Missing Information. Please reenter information and try again.");
+        } else if (response.statusCode() == 401) {
+            System.out.println("Missing Authorization. Please log out, log back in, and try again.");
+        } else if (response.statusCode() == 200) {
+            Type listType = new TypeToken<Map<String, List<GameData>>>(){}.getType();
+            Map<String, List<GameData>> gamesMap =  new Gson().fromJson(response.body(), listType);
+            return gamesMap.get("games");
+        }
+        return new ArrayList<>();
     }
 }

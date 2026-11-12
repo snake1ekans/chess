@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Function;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ClientMain {
@@ -131,6 +130,15 @@ public class ClientMain {
                     System.out.println("Creating Game.");
                     try {
                         facade.create(input);
+                    } catch (Exception e) {
+                        System.out.println("Server Error. Please restart.");
+                    }
+                }
+                // list games command
+                if (Objects.equals(input[0], "list")){
+                    System.out.println("Fetching Games.");
+                    try {
+                        renderer.list(facade.list());
                     } catch (Exception e) {
                         System.out.println("Server Error. Please restart.");
                     }

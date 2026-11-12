@@ -1,10 +1,10 @@
 package ui;
 
 import client.ClientMain;
+import model.GameData;
+import java.util.List;
 
 public class Renderer {
-
-
 
     public void introString() {
         System.out.println("Welcome to this glorious mess. Please Log In, Register, or Type 'Help' for assistance." );
@@ -36,4 +36,27 @@ public class Renderer {
         }
     }
 
+    public void list(List<GameData> games){
+        //todo: potential for status
+//        String renderName = x->(x!=null ? EscapeSequences.SET_TEXT_COLOR_GREEN + "OPEN" : EscapeSequences.SET_TEXT_COLOR_RED + );
+        System.out.print(EscapeSequences.SET_TEXT_BOLD);
+        System.out.print("|  ID  |  NAME  |  WHITE  |  BLACK  |  STATUS  |");
+        for (GameData game : games) {
+            boolean open = game.whiteUsername() == null || game.blackUsername() == null;
+            System.out.print(EscapeSequences.SET_TEXT_ITALIC);
+            System.out.print(EscapeSequences.SET_BG_COLOR_WHITE + EscapeSequences.SET_TEXT_COLOR_BLUE);
+            System.out.print("| "  + game.gameID() + " | " + game.gameName() + " | ");
+            System.out.print(EscapeSequences.SET_BG_COLOR_BLACK + EscapeSequences.SET_TEXT_COLOR_WHITE);
+            System.out.print(game.whiteUsername() );
+            System.out.print(EscapeSequences.SET_BG_COLOR_WHITE + EscapeSequences.SET_TEXT_COLOR_BLACK);
+            System.out.print(" | " + game.blackUsername() + " | ");
+            System.out.print(EscapeSequences.SET_BG_COLOR_WHITE);
+            if (open) {
+                System.out.print(EscapeSequences.SET_TEXT_COLOR_GREEN + "OPEN");
+            } else {
+                System.out.print(EscapeSequences.SET_TEXT_COLOR_RED + "FULL");
+            }
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_BLACK + " |\n");
+        }
+    }
 }
