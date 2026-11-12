@@ -29,10 +29,8 @@ public class ClientMain {
         VALID_COMMANDS.put(x->Pattern.matches("^[Ll]ist|^[Ll]ist [Gg]ames?", x), "list");
         VALID_COMMANDS.put(x->Pattern.matches("^[Pp]lay|^[Pp]lay game", x), "play");
         VALID_COMMANDS.put(x->Pattern.matches("^[Oo]bserve|^[Oo]bserve [Gg]ame", x), "observe");
+        VALID_COMMANDS.put(x->Pattern.matches("^[Ll]eave$|^[Rr]esign$", x), "leave");
         VALID_COMMANDS.put(x->Pattern.matches("^[Yy]|^[Yy]es", x), "confirm");
-
-
-//        VALID_COMMANDS.put("^[Yy]|^[Yy]es", "confirm");
     }
 
 // ---------- REPL ----------
@@ -143,6 +141,18 @@ public class ClientMain {
                         System.out.println("Server Error. Please restart.");
                     }
                 }
+                // join command
+                if (Objects.equals(input[0], "join")){
+                    System.out.println("Joining Game");
+                    facade.join(input);
+                    userState = States.GAMEPLAY;
+                }
+
+
+
+            }
+            while(userState == States.GAMEPLAY){
+
             }
         }
     }
