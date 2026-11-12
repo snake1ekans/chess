@@ -109,7 +109,6 @@ public class Server {
             GameData requestData = new Gson().fromJson(context.body(), GameData.class);
             authService.authorize(new AuthData(null, context.header("authorization")));
             Integer gameID = gameService.createGame(requestData);
-
             context.status(200);
             context.result(new Gson().toJson(Map.of("gameID", gameID)));
         } catch (NotAuthorizedException n) {
