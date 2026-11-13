@@ -1,11 +1,12 @@
 package client;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-
+import service.JoinRequestData;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,12 +15,14 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class ServerFacade {
 
     private AuthData authData;
     private final HttpClient httpClient = HttpClient.newHttpClient();
+    JoinRequestData joinedGame = null;
 
     // functions with boolean return values can change the state of the program.
     // a True return means that the state will change to the appropriate state.
@@ -151,5 +154,32 @@ public class ServerFacade {
             return gamesMap.get("games");
         }
         return new ArrayList<>();
+    }
+
+    public boolean join(String[] args) throws Exception {
+        JoinRequestData joinRequest = new JoinRequestData(Integer.parseInt(args[1]), args[2], authData.username());
+        var JsonBody = new Gson().toJson(joinRequest);
+        String urlstring = "http://localhost:8080/game";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(urlstring))
+                .PUT(HttpRequest.BodyPublishers.ofString(JsonBody))
+                .header("Content-Type", "application/json")
+                .header("Authorization", authData.authToken())
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 500) {
+            System.out.println("Server Error. Please try again.");
+        } else if (response.statusCode() == 400) {
+            System.out.println("Missing Information. Please reenter information and try again.");
+        } else if (response.statusCode() == 401) {
+            System.out.println("Missing Authorization. Please log out, log back in, and try again.");
+        } else if (response.statusCode() == 403) {
+            System.out.println("Spot already taken. Please join another game.");
+        } else if (response.statusCode() == 200) {
+            System.out.println("Joined game successfully.");
+            joinedGame = joinRequest;
+            return true;
+        }
+        return false;
     }
 }

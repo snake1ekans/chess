@@ -1,10 +1,16 @@
 package ui;
 
+import chess.ChessBoard;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import client.ClientMain;
 import model.GameData;
 import java.util.List;
 
 public class Renderer {
+
+    String EMPTY_WHITE = EscapeSequences.SET_BG_COLOR_WHITE + " " + EscapeSequences.EMPTY + " ";
+    String EMPTY_BLACK = EscapeSequences.SET_BG_COLOR_BLACK + " " + EscapeSequences.EMPTY + " ";
 
     public void introString() {
         System.out.println("Welcome to this glorious mess. Please Log In, Register, or Type 'Help' for assistance.");
@@ -70,18 +76,34 @@ public class Renderer {
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_RED + EscapeSequences.SET_TEXT_ITALIC + "FULL");
             }
             System.out.print(EscapeSequences.RESET_TEXT_ITALIC + EscapeSequences.SET_TEXT_COLOR_BLACK + " | "
-                    + EscapeSequences.RESET_BG_COLOR + "\n");
+                    + EscapeSequences.RESET_BG_COLOR + "\n" + EscapeSequences.RESET_TEXT_COLOR);
         }
     }
 
-    public void renderBoardWhite() {
+    public void renderBoardWhite(GameData game) {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+
+        ChessBoard board = game.game().getBoard();
+
+        for (int i=8; i>0; i--){ // iterate column-wise
+            for (int j=1; j<9; j++){ // iterate row-wise
+                ChessPiece piece = board.getPiece(new ChessPosition(j,i));
+            }
+        }
+
+
+
     }
 
-    public void renderBoardBlack() {
+    public void renderBoardBlack(GameData game) {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+
+        String emptyWhite =
+
+
+
     }
 
 

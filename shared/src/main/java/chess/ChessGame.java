@@ -15,6 +15,7 @@ public class ChessGame {
 
     private TeamColor currTurn;
     private ChessBoard board;
+
     public void setBoard(ChessBoard board) {
         this.board = board;
     }

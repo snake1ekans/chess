@@ -1,6 +1,8 @@
 package client;
 
 import chess.*;
+import model.GameData;
+import service.JoinRequestData;
 import ui.Renderer;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,9 +15,8 @@ public class ClientMain {
 
     public static ServerFacade facade = new ServerFacade();
     public static Renderer renderer = new Renderer();
-    public enum States {
-        NO_LOGIN, LOGGED_IN, GAMEPLAY
-    }
+    public enum States {NO_LOGIN, LOGGED_IN, GAMEPLAY}
+    public enum RenderType {WHITE, BLACK, OBSERVE}
     public static HashMap<Function<String, Boolean>, String> VALID_COMMANDS;
 
     private static void initializeCommands(){
@@ -36,8 +37,11 @@ public class ClientMain {
 // ---------- REPL ----------
 
     public static void main(String[] args) throws Exception {
-        States userState = States.NO_LOGIN;
+        // initialize repl globals
         initializeCommands();
+        States userState = States.NO_LOGIN;
+        RenderType renderType = RenderType.OBSERVE;
+        // start repl
         renderer.introString();
         while (true) {
             // startup flow WORKS
@@ -87,7 +91,7 @@ public class ClientMain {
                     renderer.invalidCommand();
                 }
             }
-            //logged-in flow WIP
+            //logged-in flow WORKS
             while (userState == States.LOGGED_IN) {
                 String[] input = readInput();
                 // help command
@@ -142,17 +146,33 @@ public class ClientMain {
                     }
                 }
                 // join command
-                if (Objects.equals(input[0], "join")){
+                if (Objects.equals(input[0], "play")){
                     System.out.println("Joining Game");
-                    facade.join(input);
-                    userState = States.GAMEPLAY;
+                    if (facade.join(input)){
+                        userState = States.GAMEPLAY;
+                    }
+                    if (Objects.equals(input[2], "WHITE")) {
+                        renderType = RenderType.WHITE;
+                    } else if (Objects.equals(input[2], "BLACK")) {
+                        renderType = RenderType.BLACK;
+                    }
                 }
-
-
-
             }
-            while(userState == States.GAMEPLAY){
 
+            while(userState == States.GAMEPLAY){
+                //todo: De-initialize ts in phase 6
+                GameData activeGame = new GameData(null, null, null, null, new ChessGame());
+
+                if (renderType == RenderType.WHITE || renderType == RenderType.OBSERVE) {
+                    renderer.renderBoardWhite(activeGame);
+                } else {
+                    renderer.renderBoardBlack(activeGame);
+                }
+                String[] input = readInput();
+                if (Objects.equals(input[0], "leave")){
+                    userState = States.LOGGED_IN;
+                    System.out.println("Left game successfully.");
+                }
             }
         }
     }
