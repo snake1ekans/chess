@@ -93,7 +93,7 @@ public class ServerFacadeTests {
     }
     @Test
     @DisplayName("CreateGameSuccess")
-    public void CreateGame() throws Exception {
+    public void createGame() throws Exception {
         assertTrue(facade.login(user1));
         String[] noName = {"create"};
         String[] nullInjection = {"create", null};

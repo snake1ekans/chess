@@ -16,24 +16,24 @@ public class ClientMain {
     public static Renderer renderer = new Renderer();
     public enum States {NO_LOGIN, LOGGED_IN, GAMEPLAY}
     public enum RenderType {WHITE, BLACK, OBSERVE}
-    public static HashMap<Function<String, Boolean>, String> VALID_COMMANDS;
+    public static HashMap<Function<String, Boolean>, String> validCommands;
     public static GameData activeGame = null;
     public static String activeUser = null;
 
     private static void initializeCommands(){
-        VALID_COMMANDS = new HashMap<>();
-        VALID_COMMANDS.put(x->Pattern.matches("^[Hh]elp|^h", x), "help");
-        VALID_COMMANDS.put(x->Pattern.matches("^[Qq]uit|^q$", x), "quit");
-        VALID_COMMANDS.put(x->Pattern.matches("^[Ll]ogin$", x), "login");
-        VALID_COMMANDS.put(x->Pattern.matches("^[Rr]egister", x), "register");
-        VALID_COMMANDS.put(x->Pattern.matches("^[Ll]ogout", x), "logout");
-        VALID_COMMANDS.put(x->Pattern.matches("^[Cc]reate|^[Cc]reate [Gg]ame", x), "create");
-        VALID_COMMANDS.put(x->Pattern.matches("^[Ll]ist|^[Ll]ist [Gg]ames?", x), "list");
-        VALID_COMMANDS.put(x->Pattern.matches("^[Pp]lay|^[Pp]lay game", x), "play");
-        VALID_COMMANDS.put(x->Pattern.matches("^[Oo]bserve|^[Oo]bserve [Gg]ame", x), "observe");
-        VALID_COMMANDS.put(x->Pattern.matches("^[Ll]eave$|^[Rr]esign$", x), "leave");
-        VALID_COMMANDS.put(x->Pattern.matches("^[Yy]|^[Yy]es", x), "confirm");
-        VALID_COMMANDS.put(x->Pattern.matches("^[Nn]o?", x), "deny");
+        validCommands = new HashMap<>();
+        validCommands.put(x->Pattern.matches("^[Hh]elp|^h", x), "help");
+        validCommands.put(x->Pattern.matches("^[Qq]uit|^q$", x), "quit");
+        validCommands.put(x->Pattern.matches("^[Ll]ogin$", x), "login");
+        validCommands.put(x->Pattern.matches("^[Rr]egister", x), "register");
+        validCommands.put(x->Pattern.matches("^[Ll]ogout", x), "logout");
+        validCommands.put(x->Pattern.matches("^[Cc]reate|^[Cc]reate [Gg]ame", x), "create");
+        validCommands.put(x->Pattern.matches("^[Ll]ist|^[Ll]ist [Gg]ames?", x), "list");
+        validCommands.put(x->Pattern.matches("^[Pp]lay|^[Pp]lay game", x), "play");
+        validCommands.put(x->Pattern.matches("^[Oo]bserve|^[Oo]bserve [Gg]ame", x), "observe");
+        validCommands.put(x->Pattern.matches("^[Ll]eave$|^[Rr]esign$", x), "leave");
+        validCommands.put(x->Pattern.matches("^[Yy]|^[Yy]es", x), "confirm");
+        validCommands.put(x->Pattern.matches("^[Nn]o?", x), "deny");
 
     }
 
@@ -57,7 +57,6 @@ public class ClientMain {
                         System.out.println("Are you sure you would like to quit? [Yes | No]");
                         String in = readInput()[0];
                         if (Objects.equals(in, "confirm")) {
-                            //todo: this may be a bit inelegant, figure out if there's more that needs to be done
                             System.out.println("Goodbye!");
                             System.exit(0);
                         } break;
@@ -185,7 +184,7 @@ public class ClientMain {
         String input = reader.readLine();
 
         //Convert to ArgsVector
-        for (HashMap.Entry<Function<String, Boolean>, String> entry: VALID_COMMANDS.entrySet()) {
+        for (HashMap.Entry<Function<String, Boolean>, String> entry: validCommands.entrySet()) {
             String[] splitInput = input.split(" ");
             //lambda to see if the function is right
             if (entry.getKey().apply(splitInput[0])) {

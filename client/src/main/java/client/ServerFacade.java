@@ -31,11 +31,11 @@ public class ServerFacade {
             return false;
         }
         UserData register = new UserData(args[1], args[2], args[3]);
-        var JsonBody = new Gson().toJson(register);
+        var jsonBody = new Gson().toJson(register);
         String urlstring = "http://localhost:8080/user";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(urlstring))
-                .POST(HttpRequest.BodyPublishers.ofString(JsonBody))
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .header("Content-Type", "application/json")
                 .build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -62,11 +62,11 @@ public class ServerFacade {
             return false;
         }
         UserData register = new UserData(args[1], args[2], null);
-        var JsonBody = new Gson().toJson(register);
+        var jsonBody = new Gson().toJson(register);
         String urlstring = "http://localhost:8080/session";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(urlstring))
-                .POST(HttpRequest.BodyPublishers.ofString(JsonBody))
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .header("Content-Type", "application/json")
                 .build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());

@@ -10,10 +10,10 @@ import java.util.List;
 
 public class Renderer {
 
-    String EMPTY_WHITE = EscapeSequences.SET_BG_COLOR_WHITE + " " + EscapeSequences.EMPTY + " ";
-    String EMPTY_BLACK = EscapeSequences.SET_BG_COLOR_BLACK + " " + EscapeSequences.EMPTY + " ";
-    String OPEN_WHITE = EscapeSequences.SET_BG_COLOR_WHITE + " ";
-    String OPEN_BLACK = EscapeSequences.SET_BG_COLOR_BLACK + " ";
+    static final String EMPTY_WHITE = EscapeSequences.SET_BG_COLOR_WHITE + " " + EscapeSequences.EMPTY + " ";
+    static final String EMPTY_BLACK = EscapeSequences.SET_BG_COLOR_BLACK + " " + EscapeSequences.EMPTY + " ";
+    static final String OPEN_WHITE = EscapeSequences.SET_BG_COLOR_WHITE + " ";
+    static final String OPEN_BLACK = EscapeSequences.SET_BG_COLOR_BLACK + " ";
 
     public void introString() {
         System.out.println("Welcome to this glorious mess. Please Log In, Register, or Type 'Help' for assistance.");
