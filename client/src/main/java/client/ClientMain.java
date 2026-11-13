@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 public class ClientMain {
 
-    public static ServerFacade facade = new ServerFacade();
+    public static ServerFacade facade = new ServerFacade(8080);
     public static Renderer renderer = new Renderer();
 
     public enum States {NO_LOGIN, LOGGED_IN, GAMEPLAY}
@@ -158,7 +158,7 @@ public class ClientMain {
             userState = States.GAMEPLAY;
             System.out.println("Joined game successfully.");
         }
-        if (Objects.equals(input[2], "WHITE")) {
+        if (Objects.equals(input[2], "OBSERVE") || Objects.equals(input[2], "WHITE") ) {
             renderType = RenderType.WHITE;
             activeGame = new GameData(Integer.parseInt(input[1]), activeUser, null, null, new ChessGame());
 

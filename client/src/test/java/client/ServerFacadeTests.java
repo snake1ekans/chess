@@ -1,19 +1,12 @@
 package client;
 
-import dataaccess.DatabaseManager;
-import exceptions.DatabaseException;
+
 import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.*;
 import server.Server;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Objects;
-
-import static dataaccess.DatabaseManager.getConnection;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -28,9 +21,9 @@ public class ServerFacadeTests {
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(8080);
+        var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        facade = new ServerFacade();
+        facade = new ServerFacade(port);
     }
     @AfterAll
     static void stopServer() {
