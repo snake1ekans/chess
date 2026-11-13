@@ -94,7 +94,7 @@ public class ClientMain {
                         joinHelper(input);
                         break;
                     default:
-                        System.out.println("Invalid Command. Create or Join a game, or type 'help'");
+                        break;
                 }
             }
             while (userState == States.GAMEPLAY) {
@@ -147,10 +147,13 @@ public class ClientMain {
         }
         // invalid command
         renderer.invalidCommand();
-        return new String[1];
+        String[] rString = {"bad"};
+        return rString;
     }
-
     private static void joinHelper(String[] input) throws Exception {
+        if (input.length < 3){
+            System.out.println("Missing arguments. Please enter new data.");
+        }
         if (facade.join(input)) {
             userState = States.GAMEPLAY;
             System.out.println("Joined game successfully.");
@@ -165,6 +168,7 @@ public class ClientMain {
 
         } else if (Objects.equals(input[2], "OBSERVE")) {
             renderType = RenderType.OBSERVE;
+            activeGame = new GameData(Integer.parseInt(input[1]), null, null, null, new ChessGame());
         }
     }
     private static void loginHelper(String[] input){
