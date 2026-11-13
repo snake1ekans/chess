@@ -33,6 +33,8 @@ public class ClientMain {
         VALID_COMMANDS.put(x->Pattern.matches("^[Oo]bserve|^[Oo]bserve [Gg]ame", x), "observe");
         VALID_COMMANDS.put(x->Pattern.matches("^[Ll]eave$|^[Rr]esign$", x), "leave");
         VALID_COMMANDS.put(x->Pattern.matches("^[Yy]|^[Yy]es", x), "confirm");
+        VALID_COMMANDS.put(x->Pattern.matches("^[Nn]o?", x), "deny");
+
     }
 
 // ---------- REPL ----------
@@ -109,6 +111,8 @@ public class ClientMain {
                         try {
                             if (facade.logout()) {
                                 userState = States.NO_LOGIN;
+                                System.out.println("Goodbye!");
+                                System.exit(0);
                             }
                         } catch (Exception e) {
                             System.out.println("Server Error. Please restart.");
@@ -125,6 +129,7 @@ public class ClientMain {
                     try {
                         if (facade.logout()) {
                             userState = States.NO_LOGIN;
+                            System.out.println("Logged out Successfully. You may log in or quit the program.");
                         }
                     } catch (Exception e) {
                         System.out.println("Server Error. Please restart.");
@@ -153,6 +158,7 @@ public class ClientMain {
                     System.out.println("Joining Game");
                     if (facade.join(input)){
                         userState = States.GAMEPLAY;
+                        System.out.println("Joined game successfully.");
                     }
                     if (Objects.equals(input[2], "WHITE")) {
                         renderType = RenderType.WHITE;

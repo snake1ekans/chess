@@ -106,7 +106,6 @@ public class ServerFacade {
             return false;
         } else if (response.statusCode() == 200) {
             authData = new Gson().fromJson(response.body(), AuthData.class);
-            System.out.println("Logged out Successfully. You may log in or quit the program.");
             return true;
         }
         return false;
@@ -214,7 +213,6 @@ public class ServerFacade {
         } else if (response.statusCode() == 403) {
             System.out.println("Spot already taken. Please join another game.");
         } else if (response.statusCode() == 200) {
-            System.out.println("Joined game successfully.");
             joinedGame = requestData;
             return true;
         }
