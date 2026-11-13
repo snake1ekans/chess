@@ -30,6 +30,7 @@ public class ServerFacade {
             System.out.println("Missing information. Please reenter information and try again.");
             return false;
         }
+        System.out.println("Attempting to register " + args[1] + " as a new user. Please wait.");
         UserData register = new UserData(args[1], args[2], args[3]);
         var jsonBody = new Gson().toJson(register);
         String urlstring = "http://localhost:8080/user";
@@ -61,6 +62,7 @@ public class ServerFacade {
             System.out.println("Missing Information. Please reenter information and try again.");
             return false;
         }
+        System.out.println("Attempting to login " + args[1] + ". Please wait.");
         UserData register = new UserData(args[1], args[2], null);
         var jsonBody = new Gson().toJson(register);
         String urlstring = "http://localhost:8080/session";
@@ -88,6 +90,7 @@ public class ServerFacade {
     }
 
     public boolean logout() throws Exception {
+        System.out.println("Logging out.");
         String urlstring = "http://localhost:8080/session";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(urlstring))
@@ -104,6 +107,7 @@ public class ServerFacade {
             return false;
         } else if (response.statusCode() == 200) {
             authData = null;
+            System.out.println("Logged out Successfully. You may log in or quit the program.");
             return true;
         }
         return false;
@@ -115,15 +119,16 @@ public class ServerFacade {
             return false;
         }
         if (args.length < 2){
-            System.out.println("please name your game");
+            System.out.println("Please name your game");
             return false;
         }
+        System.out.println("Creating Game.");
         GameData game = new GameData(null, null, null, args[1], null);
-        var JsonBody = new Gson().toJson(game);
+        var jsonBody = new Gson().toJson(game);
         String urlstring = "http://localhost:8080/game";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(urlstring))
-                .POST(HttpRequest.BodyPublishers.ofString(JsonBody))
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .header("Content-Type", "application/json")
                 .header("Authorization", authData.authToken())
                 .build();
@@ -149,6 +154,7 @@ public class ServerFacade {
             System.out.println("Authorization error. Please restart your client.");
             return new ArrayList<>();
         }
+        System.out.println("Fetching Games.");
         String urlstring = "http://localhost:8080/game";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(urlstring))
@@ -171,6 +177,7 @@ public class ServerFacade {
     }
 
     public boolean join(String[] args) throws Exception {
+        System.out.println("Joining Game");
         try{
             JoinRequestData joinRequest = new JoinRequestData(Integer.parseInt(args[1]), args[2], authData.username());
             if (joinOrLeave(joinRequest)) {
@@ -209,11 +216,11 @@ public class ServerFacade {
 
 // ---------- helpers ----------
     private boolean joinOrLeave(JoinRequestData requestData) throws Exception {
-        var JsonBody = new Gson().toJson(requestData);
+        var jsonBody = new Gson().toJson(requestData);
         String urlstring = "http://localhost:8080/game";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(urlstring))
-                .PUT(HttpRequest.BodyPublishers.ofString(JsonBody))
+                .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .header("Content-Type", "application/json")
                 .header("Authorization", authData.authToken())
                 .build();
