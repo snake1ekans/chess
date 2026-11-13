@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessBoard;
+import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import client.ClientMain;
@@ -11,6 +12,8 @@ public class Renderer {
 
     String EMPTY_WHITE = EscapeSequences.SET_BG_COLOR_WHITE + " " + EscapeSequences.EMPTY + " ";
     String EMPTY_BLACK = EscapeSequences.SET_BG_COLOR_BLACK + " " + EscapeSequences.EMPTY + " ";
+    String OPEN_WHITE = EscapeSequences.SET_BG_COLOR_WHITE + " ";
+    String OPEN_BLACK = EscapeSequences.SET_BG_COLOR_BLACK + " ";
 
     public void introString() {
         System.out.println("Welcome to this glorious mess. Please Log In, Register, or Type 'Help' for assistance.");
@@ -45,8 +48,10 @@ public class Renderer {
     public void list(List<GameData> games) {
         //todo: potential for status
         System.out.print(EscapeSequences.SET_BG_COLOR_WHITE + EscapeSequences.SET_TEXT_COLOR_BLACK + EscapeSequences.SET_TEXT_BOLD);
-        System.out.print("|  ID  |  NAME  |  WHITE  |  BLACK  |  STATUS  |" + EscapeSequences.RESET_BG_COLOR + "\n");
+        System.out.print("|  ID  |  NAME  |  WHITE  |  BLACK  |  STATUS  |" +
+                EscapeSequences.RESET_BG_COLOR + EscapeSequences.RESET_TEXT_COLOR + "\n");
         System.out.print(EscapeSequences.RESET_TEXT_BOLD_FAINT);
+
         for (GameData game : games) {
             String whiteRender = game.whiteUsername() == null ? EscapeSequences.SET_TEXT_COLOR_GREEN + "OPEN"
                     : EscapeSequences.SET_TEXT_COLOR_RED + game.whiteUsername();
@@ -87,25 +92,69 @@ public class Renderer {
         ChessBoard board = game.game().getBoard();
 
         for (int i=8; i>0; i--){ // iterate column-wise
+            String rowString = "";
             for (int j=1; j<9; j++){ // iterate row-wise
-                ChessPiece piece = board.getPiece(new ChessPosition(j,i));
+                rowString = rowString.concat(renderSquare(board, i, j));
             }
+            rowString = rowString.concat(EscapeSequences.RESET_BG_COLOR+"\n");
+            System.out.print(rowString);
         }
-
-
-
     }
 
     public void renderBoardBlack(GameData game) {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-
-        String emptyWhite =
-
-
 
     }
 
+    private String renderSquare(ChessBoard board, Integer i, Integer j){
+        String rowString = "";
+        ChessPiece piece = board.getPiece(new ChessPosition(i,j));
+        boolean blackSquareCheck = (i % 2 == 0 && j % 2 == 0) || (i % 2 == 1 && j % 2 == 1);
+        if (piece == null) {
+            rowString = rowString.concat(blackSquareCheck ? EMPTY_BLACK : EMPTY_WHITE);
+            return rowString;
+        }
+
+        ChessGame.TeamColor pieceColor = piece.getTeamColor();
+        switch (piece.getPieceType()) {
+            case ChessPiece.PieceType.BISHOP:
+                rowString = rowString.concat(blackSquareCheck ? OPEN_BLACK : OPEN_WHITE);
+                rowString = rowString.concat(pieceColor == ChessGame.TeamColor.BLACK ?
+                        EscapeSequences.BLACK_BISHOP : EscapeSequences.WHITE_BISHOP);
+                rowString = rowString.concat(" ");
+                break;
+            case ChessPiece.PieceType.PAWN:
+                rowString = rowString.concat(blackSquareCheck ? OPEN_BLACK : OPEN_WHITE);
+                rowString = rowString.concat(pieceColor == ChessGame.TeamColor.BLACK ?
+                        EscapeSequences.BLACK_PAWN : EscapeSequences.WHITE_PAWN);
+                rowString = rowString.concat(" ");
+                break;
+            case ChessPiece.PieceType.KING:
+                rowString = rowString.concat(blackSquareCheck ? OPEN_BLACK : OPEN_WHITE);
+                rowString = rowString.concat(pieceColor == ChessGame.TeamColor.BLACK ?
+                        EscapeSequences.BLACK_KING : EscapeSequences.WHITE_KING);
+                rowString = rowString.concat(" ");
+                break;
+            case ChessPiece.PieceType.QUEEN:
+                rowString = rowString.concat(blackSquareCheck ? OPEN_BLACK : OPEN_WHITE);
+                rowString = rowString.concat(pieceColor == ChessGame.TeamColor.BLACK ?
+                        EscapeSequences.BLACK_QUEEN : EscapeSequences.WHITE_QUEEN);
+                rowString = rowString.concat(" ");
+                break;
+            case ChessPiece.PieceType.ROOK:
+                rowString = rowString.concat(blackSquareCheck ? OPEN_BLACK : OPEN_WHITE);
+                rowString = rowString.concat(pieceColor == ChessGame.TeamColor.BLACK ?
+                        EscapeSequences.BLACK_ROOK : EscapeSequences.WHITE_ROOK);
+                rowString = rowString.concat(" ");
+                break;
+            case ChessPiece.PieceType.KNIGHT:
+                rowString = rowString.concat(blackSquareCheck ? OPEN_BLACK : OPEN_WHITE);
+                rowString = rowString.concat(pieceColor == ChessGame.TeamColor.BLACK ?
+                        EscapeSequences.BLACK_KNIGHT : EscapeSequences.WHITE_KNIGHT);
+                rowString = rowString.concat(" ");
+                break;
+        }
+        return rowString;
+    }
 
 
 }
