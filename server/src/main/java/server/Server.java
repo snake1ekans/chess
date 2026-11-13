@@ -124,8 +124,12 @@ public class Server {
             JoinRequestData requestData = new Gson().fromJson(context.body(), JoinRequestData.class);
             AuthData authToken = new AuthData(null, context.header("authorization"));
             authService.authorize(authToken);
-            gameService.joinGame(new JoinRequestData(requestData.gameID(),
-                    requestData.playerColor(), authService.getUsername(authToken)));
+            if ((requestData.userName() != null)) {
+                gameService.joinGame(new JoinRequestData(requestData.gameID(),
+                        requestData.playerColor(), authService.getUsername(authToken)));
+            } else {
+                gameService.joinGame(requestData);
+            }
             context.status(200);
         } catch (NotAuthorizedException n) {
             unauthorizedHelper(context);

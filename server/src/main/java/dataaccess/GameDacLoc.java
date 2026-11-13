@@ -49,7 +49,7 @@ public class GameDacLoc implements GameDAC {
             throw new DataAccessException("game doesn't exist");
         }
         if (Objects.equals(joinRequestData.playerColor(), "BLACK")) {
-            if (target.blackUsername() != null){
+            if (target.blackUsername() != null && joinRequestData.userName() != null){
                 throw new DataConflictException("slot already taken");
             }
             GameData updatedGame = new GameData(target.gameID(), target.whiteUsername(),
@@ -60,7 +60,7 @@ public class GameDacLoc implements GameDAC {
 
         } else {
 
-            if (target.whiteUsername() != null){
+            if (target.whiteUsername() != null && joinRequestData.userName() != null){
                 throw new DataConflictException("slot already taken");
             }
             GameData updatedGame = new GameData(target.gameID(), joinRequestData.userName(),

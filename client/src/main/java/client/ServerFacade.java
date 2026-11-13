@@ -160,32 +160,64 @@ public class ServerFacade {
     public boolean join(String[] args) throws Exception {
         try{
             JoinRequestData joinRequest = new JoinRequestData(Integer.parseInt(args[1]), args[2], authData.username());
-            var JsonBody = new Gson().toJson(joinRequest);
-            String urlstring = "http://localhost:8080/game";
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(urlstring))
-                    .PUT(HttpRequest.BodyPublishers.ofString(JsonBody))
-                    .header("Content-Type", "application/json")
-                    .header("Authorization", authData.authToken())
-                    .build();
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == 500) {
-                System.out.println("Server Error. Please try again.");
-            } else if (response.statusCode() == 400) {
-                System.out.println("Missing Information. Please reenter information and try again.");
-            } else if (response.statusCode() == 401) {
-                System.out.println("Missing Authorization. Please log out, log back in, and try again.");
-            } else if (response.statusCode() == 403) {
-                System.out.println("Spot already taken. Please join another game.");
-            } else if (response.statusCode() == 200) {
-                System.out.println("Joined game successfully.");
+            if (joinOrLeave(joinRequest)) {
                 joinedGame = joinRequest;
                 return true;
+            } else {
+                return false;
             }
-            return false;
         } catch (NumberFormatException n) {
             System.out.println("Invalid game ID. Try again.");
             return false;
+        } catch (Exception e) {
+            System.out.println("Server Error. Try again.");
         }
+        return false;
+    }
+
+    public boolean leave(String[] args) {
+        try{
+            JoinRequestData leaveRequest = new JoinRequestData(Integer.parseInt(args[1]), args[2], null);
+            if (joinOrLeave(leaveRequest)) {
+                joinedGame = null;
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NumberFormatException n) {
+            System.out.println("Invalid game ID. Try again.");
+            return false;
+        } catch (Exception e) {
+            System.out.println("Server Error. Try again.");
+        }
+        return false;
+    }
+
+
+// ---------- helpers ----------
+    private boolean joinOrLeave(JoinRequestData requestData) throws Exception {
+        var JsonBody = new Gson().toJson(requestData);
+        String urlstring = "http://localhost:8080/game";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(urlstring))
+                .PUT(HttpRequest.BodyPublishers.ofString(JsonBody))
+                .header("Content-Type", "application/json")
+                .header("Authorization", authData.authToken())
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 500) {
+            System.out.println("Server Error. Please try again.");
+        } else if (response.statusCode() == 400) {
+            System.out.println("Missing Information. Please reenter information and try again.");
+        } else if (response.statusCode() == 401) {
+            System.out.println("Missing Authorization. Please log out, log back in, and try again.");
+        } else if (response.statusCode() == 403) {
+            System.out.println("Spot already taken. Please join another game.");
+        } else if (response.statusCode() == 200) {
+            System.out.println("Joined game successfully.");
+            joinedGame = requestData;
+            return true;
+        }
+        return false;
     }
 }

@@ -90,21 +90,44 @@ public class Renderer {
         System.out.flush();
 
         ChessBoard board = game.game().getBoard();
-
+        System.out.print(EMPTY_BLACK  + "   a    b    c    d    e    f    g    h  "
+                + EMPTY_BLACK + EscapeSequences.RESET_BG_COLOR + "\n");
         for (int i=8; i>0; i--){ // iterate column-wise
-            String rowString = "";
+
+            String rowString = OPEN_BLACK + "  " + i + "  ";
             for (int j=1; j<9; j++){ // iterate row-wise
                 rowString = rowString.concat(renderSquare(board, i, j));
             }
+            rowString = rowString.concat(OPEN_BLACK + " " + i + "  ");
             rowString = rowString.concat(EscapeSequences.RESET_BG_COLOR+"\n");
             System.out.print(rowString);
         }
+        System.out.print(EMPTY_BLACK  + "   a    b    c    d    e    f    g    h  "
+                + EMPTY_BLACK + EscapeSequences.RESET_BG_COLOR + "\n");
     }
 
     public void renderBoardBlack(GameData game) {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
 
+        ChessBoard board = game.game().getBoard();
+        System.out.print(EMPTY_BLACK  + "   h    g    f    e    d    c    b    a  "
+                + EMPTY_BLACK + EscapeSequences.RESET_BG_COLOR + "\n");
+        for (Integer i=1; i<9; i++){ // iterate column-wise
+            String rowString = OPEN_BLACK + "  " + i + "  ";
+            for (Integer j=8; j>0; j--){ // iterate row-wise
+                rowString = rowString.concat(renderSquare(board, i, j));
+            }
+            rowString = rowString.concat(OPEN_BLACK + " " + i + "  ");
+            rowString = rowString.concat(EscapeSequences.RESET_BG_COLOR+"\n");
+            System.out.print(rowString);
+        }
+        System.out.print(EMPTY_BLACK + EscapeSequences.SET_TEXT_COLOR_WHITE + "   h    g    f    e    d    c    b    a  "
+                + EMPTY_BLACK + EscapeSequences.RESET_BG_COLOR + EscapeSequences.RESET_TEXT_COLOR + "\n");
     }
 
+
+    // ----------- Helpers ----------
     private String renderSquare(ChessBoard board, Integer i, Integer j){
         String rowString = "";
         ChessPiece piece = board.getPiece(new ChessPosition(i,j));
