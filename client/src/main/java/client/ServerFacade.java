@@ -1,6 +1,5 @@
 package client;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import model.AuthData;
@@ -15,14 +14,13 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 
 public class ServerFacade {
 
-    private AuthData authData;
-    private final HttpClient httpClient = HttpClient.newHttpClient();
-    JoinRequestData joinedGame = null;
+    public AuthData authData;
+    public final HttpClient httpClient = HttpClient.newHttpClient();
+    public JoinRequestData joinedGame = null;
 
     // functions with boolean return values can change the state of the program.
     // a True return means that the state will change to the appropriate state.
@@ -105,13 +103,21 @@ public class ServerFacade {
             System.out.println("Missing information. Please try again.");
             return false;
         } else if (response.statusCode() == 200) {
-            authData = new Gson().fromJson(response.body(), AuthData.class);
+            authData = null;
             return true;
         }
         return false;
     }
 
-    public void create(String[] args) throws Exception {
+    public boolean create(String[] args) throws Exception {
+        if (authCheck()){
+            System.out.println("Authorization error. Please restart your client.");
+            return false;
+        }
+        if (args.length < 2){
+            System.out.println("please name your game");
+            return false;
+        }
         GameData game = new GameData(null, null, null, args[1], null);
         var JsonBody = new Gson().toJson(game);
         String urlstring = "http://localhost:8080/game";
@@ -124,17 +130,25 @@ public class ServerFacade {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() == 500) {
             System.out.println("Server Error. Please try again.");
+            return false;
         } else if (response.statusCode() == 400) {
             System.out.println("Missing Information. Please reenter information and try again.");
+            return false;
         } else if (response.statusCode() == 401) {
             System.out.println("Missing Authorization. Please log out, log back in, and try again.");
+            return false;
         } else if (response.statusCode() == 200) {
             var gameId = new Gson().fromJson(response.body(), Map.class);
             System.out.printf("Game '%s' created with ID : %.0f. Join the game to play.\n", game.gameName(), gameId.get("gameID"));
         }
+        return true;
     }
 
     public List<GameData> list() throws Exception {
+        if (authCheck()) {
+            System.out.println("Authorization error. Please restart your client.");
+            return new ArrayList<>();
+        }
         String urlstring = "http://localhost:8080/game";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(urlstring))
@@ -217,5 +231,8 @@ public class ServerFacade {
             return true;
         }
         return false;
+    }
+    private boolean authCheck(){
+        return authData == null;
     }
 }
