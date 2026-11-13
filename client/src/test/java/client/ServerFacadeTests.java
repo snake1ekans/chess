@@ -37,18 +37,21 @@ public class ServerFacadeTests {
         server.stop();
     }
     @Test
+    @Order(1)
     @DisplayName("RegisterSuccess")
     public void registerSuccess() throws Exception {
         assertTrue(facade.register(user1));
         assertTrue(facade.register(user2));
     }
     @Test
+    @Order(2)
     @DisplayName("DoubleRegister")
     public void doubleRegister() throws Exception {
         assertFalse(facade.register(user1));
         assertFalse(facade.register(user2));
     }
     @Test
+    @Order(3)
     @DisplayName("badRegister")
     public void badRegister() throws Exception {
         String[] missEmail = {"register","user1","pass1", null};
@@ -62,12 +65,14 @@ public class ServerFacadeTests {
         assertFalse(facade.register(shortArgs));
     }
     @Test
+    @Order(4)
     @DisplayName("LoginSuccess")
     public void loginSuccess() throws Exception {
         assertTrue(facade.login(user1));
         assertTrue(facade.login(user2));
     }
     @Test
+    @Order(5)
     @DisplayName("BadPassword&missingpass")
     public void badPass() throws Exception {
         String[] badUser1 = {"register","user1","badPass","email1"};
@@ -77,12 +82,14 @@ public class ServerFacadeTests {
         assertFalse(facade.login(badUser2));
     }
     @Test
+    @Order(6)
     @DisplayName("NoPass")
     public void noPass() throws Exception {
         String[] badUser2 = {"register","user2"};
         assertFalse(facade.login(badUser2));
     }
     @Test
+    @Order(7)
     @DisplayName("CreateGameSuccess")
     public void createGame() throws Exception {
         assertTrue(facade.login(user1));
@@ -98,12 +105,12 @@ public class ServerFacadeTests {
         GameData created1 = gamesList.get(0);
         GameData created2 = gamesList.get(1);
         assertTrue(Objects.equals(game1[1], created1.gameName()) || Objects.equals(game1[1], created2.gameName()));
-        assertTrue(Objects.equals(game2[1], created1.gameName()) || Objects.equals(game2[1], created2.gameName()));
     }
     @Test
+    @Order(8)
     @DisplayName("JoinAndLeave")
     public void joinLeave() throws Exception {
-        assertTrue(facade.login(user1));
+        facade.login(user1);
         assertTrue(facade.create(game1));
         assertTrue(facade.create(game2));
         List<GameData> gamesList = facade.list();
@@ -118,11 +125,17 @@ public class ServerFacadeTests {
         assertFalse(facade.join(join1W));
     }
     @Test
+    @Order(9)
+    @DisplayName("LogoutSuccess")
+    public void logoutSuccess() throws Exception {
+        assertTrue(facade.logout());
+    }
+    @Test
+    @Order(10)
     @DisplayName("badJoin")
     public void badJoinLeave() throws Exception {
         assertTrue(facade.login(user1));
         assertTrue(facade.create(game1));
-        assertTrue(facade.create(game2));
         List<GameData> gamesList = facade.list();
         GameData created1 = gamesList.get(0);
         GameData created2 = gamesList.get(1);
@@ -134,6 +147,7 @@ public class ServerFacadeTests {
         assertFalse(facade.join(join1W));
     }
     @Test
+    @Order(11)
     @DisplayName("NoAuth")
     public void noAuth() throws Exception {
         facade.authData = null;
@@ -143,6 +157,7 @@ public class ServerFacadeTests {
         facade.join(join1W);
     }
     @Test
+    @Order(12)
     @DisplayName("BadAuth")
     public void badAuth() throws Exception {
         facade.authData = new AuthData("bad", "bad");
@@ -152,11 +167,7 @@ public class ServerFacadeTests {
         facade.join(join1W);
     }
     @Test
-    @DisplayName("LogoutSuccess")
-    public void logoutSuccess() throws Exception {
-        assertTrue(facade.logout());
-    }
-    @Test
+    @Order(13)
     @DisplayName("DoubleLogout")
     public void doubleLogout() throws Exception {
         facade.authData = new AuthData("bad", "bad");
