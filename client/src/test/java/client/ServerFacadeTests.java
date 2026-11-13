@@ -28,12 +28,13 @@ public class ServerFacadeTests {
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(0);
+        var port = server.run(8080);
         System.out.println("Started test HTTP server on " + port);
         facade = new ServerFacade();
     }
     @AfterAll
     static void stopServer() {
+
         server.stop();
     }
     @Test
