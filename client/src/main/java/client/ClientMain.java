@@ -47,133 +47,114 @@ public class ClientMain {
         // start repl
         renderer.introString();
         while (true) {
-            // startup flow WORKS
             while (userState == States.NO_LOGIN) {
                 String[] input = readInput();
-                //help command code
-                if (Objects.equals(input[0], "help")) {renderer.help(userState);}
-                //quit command code
-                if (Objects.equals(input[0], "quit")) {
-                    System.out.println("Are you sure you would like to quit? [Yes | No]");
-                    String in = readInput()[0];
-                    if (Objects.equals(in, "confirm")) {
-                        //todo: this may be a bit inelegant, figure out if there's more that needs to be done
-                        System.out.println("Goodbye!");
-                        System.exit(0);
-                    }
-                }
-                //login command code
-                if (Objects.equals(input[0], "login")) {
-                    System.out.println("Attempting to login " + input[1] + ". Please wait.");
-                    try {
-                        if (facade.login(input)) {
-                            userState = States.LOGGED_IN;
-                            activeUser = input[1];
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Server Error. Please restart.");
-                    }
-                }
-                // register command code
-                if (Objects.equals(input[0], "register")) {
-                    System.out.println("Attempting to register " + input[1] + " as a new user. Please wait.");
-                    try {
-                        if (facade.register(input)) {
-                            userState = States.LOGGED_IN;
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Server Error. Please restart.");
-                    }
-                }
-                // out-of flow command
-                if (Objects.equals(input[0], "create") ||
-                    Objects.equals(input[0], "logout") ||
-                    Objects.equals(input[0], "list") ||
-                    Objects.equals(input[0], "observe") ||
-                    Objects.equals(input[0], "play") ||
-                    Objects.equals(input[0], "confirm")) {
-                    renderer.invalidCommand();
-                }
-            }
-
-            //logged-in flow WORKS
-            while (userState == States.LOGGED_IN) {
-                String[] input = readInput();
-                // help command
-                if (Objects.equals(input[0], "help")) {
-                    renderer.help(userState);
-                }
-                // quit command
-                if (Objects.equals(input[0], "quit")) {
-                    System.out.println("Are you sure you would like to quit? [Yes | No]");
-                    String in = readInput()[0];
-                    if (Objects.equals(in, "confirm")) {
+                switch (input[0]) {
+                    case ("help"):
+                        renderer.help(userState);
+                        break;
+                    case ("quit"):
+                        System.out.println("Are you sure you would like to quit? [Yes | No]");
+                        String in = readInput()[0];
+                        if (Objects.equals(in, "confirm")) {
+                            //todo: this may be a bit inelegant, figure out if there's more that needs to be done
+                            System.out.println("Goodbye!");
+                            System.exit(0);
+                        } break;
+                    case ("login"):
+                        System.out.println("Attempting to login " + input[1] + ". Please wait.");
                         try {
-                            if (facade.logout()) {
-                                userState = States.NO_LOGIN;
-                                System.out.println("Goodbye!");
-                                System.exit(0);
+                            if (facade.login(input)) {
+                                userState = States.LOGGED_IN;
+                                activeUser = input[1];
                             }
                         } catch (Exception e) {
                             System.out.println("Server Error. Please restart.");
-                        }
-                    }
-                }
-                // double-login catch
-                if (Objects.equals(input[0], "login")) {
-                    System.out.println("Already logged in. Create or Join a game, or type 'help'");
-                }
-                // logout command
-                if (Objects.equals(input[0], "logout")) {
-                    System.out.println("Logging out.");
-                    try {
-                        if (facade.logout()) {
-                            userState = States.NO_LOGIN;
-                            System.out.println("Logged out Successfully. You may log in or quit the program.");
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Server Error. Please restart.");
-                    }
-                }
-                // create game command
-                if (Objects.equals(input[0], "create")){
-                    System.out.println("Creating Game.");
-                    try {
-                        facade.create(input);
-                    } catch (Exception e) {
-                        System.out.println("Server Error. Please restart.");
-                    }
-                }
-                // list games command
-                if (Objects.equals(input[0], "list")){
-                    System.out.println("Fetching Games.");
-                    try {
-                        renderer.list(facade.list());
-                    } catch (Exception e) {
-                        System.out.println("Server Error. Please restart.");
-                    }
-                }
-                // join command
-                if (Objects.equals(input[0], "play")){
-                    System.out.println("Joining Game");
-                    if (facade.join(input)){
-                        userState = States.GAMEPLAY;
-                        System.out.println("Joined game successfully.");
-                    }
-                    if (Objects.equals(input[2], "WHITE")) {
-                        renderType = RenderType.WHITE;
-                        activeGame = new GameData(Integer.parseInt(input[1]), activeUser, null, null, new ChessGame());
-
-                    } else if (Objects.equals(input[2], "BLACK")) {
-                        renderType = RenderType.BLACK;
-                        activeGame = new GameData(Integer.parseInt(input[1]), null, activeUser, null, new ChessGame());
-
-                    } else  if (Objects.equals(input[2], "OBSERVE")){
-                        renderType = RenderType.OBSERVE;
-                    }
+                        } break;
+                    case ("register"):
+                        System.out.println("Attempting to register " + input[1] + " as a new user. Please wait.");
+                        try {
+                            if (facade.register(input)) {
+                                userState = States.LOGGED_IN;
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Server Error. Please restart.");
+                        } break;
+                    default:
+                        renderer.invalidCommand();
+                        break;
                 }
             }
+            while (userState == States.LOGGED_IN) {
+                String[] input = readInput();
+                // help command
+                switch (input[0]) {
+                    case ("help"):
+                        renderer.help(userState);
+                        break;
+                    case ("quit"):
+                        System.out.println("Are you sure you would like to quit? [Yes | No]");
+                        String in = readInput()[0];
+                        if (Objects.equals(in, "confirm")) {
+                            try {
+                                if (facade.logout()) {
+                                    userState = States.NO_LOGIN;
+                                    System.out.println("Goodbye!");
+                                    System.exit(0);
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Server Error. Please restart.");
+                                break;
+                            }
+                        } break;
+                    case("login"):
+                        System.out.println("Already logged in. Create or Join a game, or type 'help'");
+                        break;
+                    case("logout"):
+                        System.out.println("Logging out.");
+                        try {
+                            if (facade.logout()) {
+                                userState = States.NO_LOGIN;
+                                System.out.println("Logged out Successfully. You may log in or quit the program.");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Server Error. Please restart.");
+                        } break;
+                    case("create"):
+                        System.out.println("Creating Game.");
+                        try {
+                            facade.create(input);
+                        } catch (Exception e) {
+                            System.out.println("Server Error. Please restart.");
+                        } break;
+                    case("list"):
+                        System.out.println("Fetching Games.");
+                        try {
+                            renderer.list(facade.list());
+                        } catch (Exception e) {
+                            System.out.println("Server Error. Please restart.");
+                        } break;
+                    case("play"):
+                        System.out.println("Joining Game");
+                        if (facade.join(input)){
+                            userState = States.GAMEPLAY;
+                            System.out.println("Joined game successfully.");
+                        }
+                        if (Objects.equals(input[2], "WHITE")) {
+                            renderType = RenderType.WHITE;
+                            activeGame = new GameData(Integer.parseInt(input[1]), activeUser, null, null, new ChessGame());
 
+                        } else if (Objects.equals(input[2], "BLACK")) {
+                            renderType = RenderType.BLACK;
+                            activeGame = new GameData(Integer.parseInt(input[1]), null, activeUser, null, new ChessGame());
+
+                        } else  if (Objects.equals(input[2], "OBSERVE")){
+                            renderType = RenderType.OBSERVE;
+                        } break;
+                    default:
+                        System.out.println("Invalid Command. Create or Join a game, or type 'help'");
+                }
+            }
             while(userState == States.GAMEPLAY){
                 //todo: De-initialize base game in phase 6
                 if (renderType == RenderType.WHITE || renderType == RenderType.OBSERVE) {
@@ -221,7 +202,6 @@ public class ClientMain {
                 }
                 return inputConversion;
             }
-            continue;
         }
         // invalid command
         renderer.invalidCommand();
