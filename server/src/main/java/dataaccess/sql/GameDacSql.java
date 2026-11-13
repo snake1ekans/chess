@@ -110,16 +110,8 @@ public class GameDacSql implements GameDAC {
             var res = stat.executeQuery();
             if (!res.next()){
                 throw new DataAccessException("Game Id Not Found");
-            } else if (joinRequestData.userName() == null) {
-                if (Objects.equals(joinRequestData.playerColor(), "WHITE")) {
-                    stat.execute("UPDATE games SET whiteUsername = NULL WHERE id = " + joinRequestData.gameID() + ";");
-                } else {
-                    stat.execute("UPDATE games SET blackusername = NULL WHERE id = " + joinRequestData.gameID() + ";");
-                }
-            } else if (((Objects.equals(joinRequestData.playerColor(), "WHITE")
-                    && res.getString("whiteUsername") != null))
-                    || ((Objects.equals(joinRequestData.playerColor(), "BLACK")
-                    && res.getString("blackUsername") != null))) {
+            } else if (((Objects.equals(joinRequestData.playerColor(), "WHITE") && res.getString("whiteUsername") != null))
+                    || ((Objects.equals(joinRequestData.playerColor(), "BLACK") && res.getString("blackUsername") != null))) {
                 throw new DataConflictException("Slot already Taken");
             } else {
                 if (Objects.equals(joinRequestData.playerColor(), "WHITE")) {

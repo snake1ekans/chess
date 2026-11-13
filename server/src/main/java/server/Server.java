@@ -59,22 +59,22 @@ public class Server {
     // ---------- Handlers ----------
 
     private void registerHandler(Context context){
-         UserData requestData = new Gson().fromJson(context.body(), UserData.class);
-         try {
-             userService.register(requestData);
-             AuthData token = authService.login(requestData);
-             context.contentType("application/json");
-             context.status(200);
-             context.result(new Gson().toJson(Map.of("username", requestData.username(), "authToken", token.authToken())));
-         } catch (DataConflictException user_exists) {
-             context.contentType("application/json");
-             context.status(403);
-             context.result(new Gson().toJson(Map.of("message", "error: already taken")));
-         } catch (IncompleteRequestException missing_data) {
+        UserData requestData = new Gson().fromJson(context.body(), UserData.class);
+        try {
+            userService.register(requestData);
+            AuthData token = authService.login(requestData);
+            context.contentType("application/json");
+            context.status(200);
+            context.result(new Gson().toJson(Map.of("username", requestData.username(), "authToken", token.authToken())));
+        } catch (DataConflictException user_exists) {
+            context.contentType("application/json");
+            context.status(403);
+            context.result(new Gson().toJson(Map.of("message", "error: already taken")));
+        } catch (IncompleteRequestException missing_data) {
             badRequestHelper(context);
-         } catch (DatabaseException n ) {
-             serverErrorHelper(context);
-         }
+        } catch (DatabaseException n ) {
+            serverErrorHelper(context);
+        }
     }
     private void loginHandler(Context context) throws DataConflictException {
         UserData requestData = new Gson().fromJson(context.body(), UserData.class);
@@ -109,6 +109,7 @@ public class Server {
             GameData requestData = new Gson().fromJson(context.body(), GameData.class);
             authService.authorize(new AuthData(null, context.header("authorization")));
             Integer gameID = gameService.createGame(requestData);
+
             context.status(200);
             context.result(new Gson().toJson(Map.of("gameID", gameID)));
         } catch (NotAuthorizedException n) {
@@ -124,12 +125,8 @@ public class Server {
             JoinRequestData requestData = new Gson().fromJson(context.body(), JoinRequestData.class);
             AuthData authToken = new AuthData(null, context.header("authorization"));
             authService.authorize(authToken);
-            if ((requestData.userName() != null)) {
-                gameService.joinGame(new JoinRequestData(requestData.gameID(),
-                        requestData.playerColor(), authService.getUsername(authToken)));
-            } else {
-                gameService.joinGame(requestData);
-            }
+            gameService.joinGame(new JoinRequestData(requestData.gameID(),
+                    requestData.playerColor(), authService.getUsername(authToken)));
             context.status(200);
         } catch (NotAuthorizedException n) {
             unauthorizedHelper(context);
