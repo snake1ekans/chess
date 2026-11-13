@@ -6,6 +6,9 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import client.ClientMain;
 import model.GameData;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Renderer {
@@ -45,7 +48,7 @@ public class Renderer {
         }
     }
 
-    public void list(List<GameData> games) {
+    public void list(ArrayList<GameData> games) {
         //todo: potential for status
         System.out.print(EscapeSequences.SET_BG_COLOR_WHITE + EscapeSequences.SET_TEXT_COLOR_BLACK + EscapeSequences.SET_TEXT_BOLD);
         System.out.print("|  ID  |  NAME  |  WHITE  |  BLACK  |  STATUS  |" +

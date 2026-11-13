@@ -14,16 +14,15 @@ public class ClientMain {
 
     public static ServerFacade facade = new ServerFacade(8080);
     public static Renderer renderer = new Renderer();
-
     public enum States {NO_LOGIN, LOGGED_IN, GAMEPLAY}
-
     public enum RenderType {WHITE, BLACK, OBSERVE}
-
     public static HashMap<Function<String, Boolean>, String> validCommands;
     public static GameData activeGame = null;
     public static String activeUser = null;
     private static States userState = States.NO_LOGIN;
     private static RenderType renderType = RenderType.OBSERVE;
+    static HashMap<Integer, String> idMap = null;
+
 
     private static void initializeCommands() {
         validCommands = new HashMap<>();
@@ -154,21 +153,25 @@ public class ClientMain {
         if (input.length < 3){
             System.out.println("Missing arguments. Please enter new data.");
         }
+        if (Objects.equals(input[2], "OBSERVE")){
+            //todo temp code for observe
+            renderType = RenderType.OBSERVE;
+            activeGame = new GameData(Integer.parseInt(input[1]), null, null, null, new ChessGame());
+            userState = States.GAMEPLAY;
+            System.out.println("Joined game successfully.");
+            return;
+        }
+        input[1] = idMap.get(input[1]);
         if (facade.join(input)) {
             userState = States.GAMEPLAY;
             System.out.println("Joined game successfully.");
         }
-        if (Objects.equals(input[2], "OBSERVE") || Objects.equals(input[2], "WHITE") ) {
+        if (Objects.equals(input[2], "WHITE") ) {
             renderType = RenderType.WHITE;
             activeGame = new GameData(Integer.parseInt(input[1]), activeUser, null, null, new ChessGame());
-
         } else if (Objects.equals(input[2], "BLACK")) {
             renderType = RenderType.BLACK;
             activeGame = new GameData(Integer.parseInt(input[1]), null, activeUser, null, new ChessGame());
-
-        } else if (Objects.equals(input[2], "OBSERVE")) {
-            renderType = RenderType.OBSERVE;
-            activeGame = new GameData(Integer.parseInt(input[1]), null, null, null, new ChessGame());
         }
     }
     private static void loginHelper(String[] input){
@@ -228,7 +231,18 @@ public class ClientMain {
     }
     private static void listHelper(String[] input) {
         try {
-            renderer.list(facade.list());
+            var gamesList = facade.list();
+            ArrayList<GameData> gamesListMod = new ArrayList<>();
+
+            idMap = new HashMap<>();
+            Integer i = 0;
+            for (GameData game : gamesList){
+                i++;
+                idMap.put(i+1, game.gameID().toString());
+                gamesListMod.add(new GameData(i, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game()));;
+            }
+
+            renderer.list(gamesListMod);
         } catch (Exception e) {
             System.out.println("Server Error. Please restart.");
         }
