@@ -8,7 +8,7 @@ import exceptions.DataAccessException;
 import exceptions.DataConflictException;
 import exceptions.DatabaseException;
 import model.GameData;
-import service.JoinRequestData;
+import model.JoinRequestData;
 
 import java.sql.*;
 import java.util.*;

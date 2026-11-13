@@ -6,6 +6,7 @@ import exceptions.DataAccessException;
 import exceptions.DataConflictException;
 import exceptions.IncompleteRequestException;
 import model.GameData;
+import model.JoinRequestData;
 
 import java.util.List;
 import java.util.Objects;

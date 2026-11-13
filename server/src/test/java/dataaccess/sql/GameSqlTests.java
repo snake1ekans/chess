@@ -9,7 +9,7 @@ import model.GameData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.JoinRequestData;
+import model.JoinRequestData;
 
 import java.sql.*;
 import java.util.ArrayList;

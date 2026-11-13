@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import service.JoinRequestData;
+import model.JoinRequestData;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
