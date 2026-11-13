@@ -55,31 +55,13 @@ public class ClientMain {
                         renderer.help(userState);
                         break;
                     case ("quit"):
-                        System.out.println("Are you sure you would like to quit? [Yes | No]");
-                        String in = readInput()[0];
-                        if (Objects.equals(in, "confirm")) {
-                            System.out.println("Goodbye!");
-                            System.exit(0);
-                        }
+                        quitHelper(input);
                         break;
                     case ("login"):
-                        try {
-                            if (facade.login(input)) {
-                                userState = States.LOGGED_IN;
-                                activeUser = input[1];
-                            }
-                        } catch (Exception e) {
-                            System.out.println("Server Error. Please restart.");
-                        }
+                        loginHelper(input);
                         break;
                     case ("register"):
-                        try {
-                            if (facade.register(input)) {
-                                userState = States.LOGGED_IN;
-                            }
-                        } catch (Exception e) {
-                            System.out.println("Server Error. Please restart.");
-                        }
+                        registerHelper(input);
                         break;
                     default:
                         renderer.invalidCommand();
@@ -94,46 +76,19 @@ public class ClientMain {
                         renderer.help(userState);
                         break;
                     case ("quit"):
-                        System.out.println("Are you sure you would like to quit? [Yes | No]");
-                        String in = readInput()[0];
-                        if (Objects.equals(in, "confirm")) {
-                            try {
-                                if (facade.logout()) {
-                                    userState = States.NO_LOGIN;
-                                    System.out.println("Goodbye!");
-                                    System.exit(0);
-                                }
-                            } catch (Exception e) {
-                                System.out.println("Server Error. Please restart.");
-                                break;
-                            }
-                        }
+                        quitHelper(input);
                         break;
                     case ("login"):
                         System.out.println("Already logged in. Create or Join a game, or type 'help'");
                         break;
                     case ("logout"):
-                        try {
-                            if (facade.logout()) {
-                                userState = States.NO_LOGIN;
-                            }
-                        } catch (Exception e) {
-                            System.out.println("Server Error. Please restart.");
-                        }
+                        logoutHelper(input);
                         break;
                     case ("create"):
-                        try {
-                            facade.create(input);
-                        } catch (Exception e) {
-                            System.out.println("Server Error. Please restart.");
-                        }
+                        createHelper(input);
                         break;
                     case ("list"):
-                        try {
-                            renderer.list(facade.list());
-                        } catch (Exception e) {
-                            System.out.println("Server Error. Please restart.");
-                        }
+                        listHelper(input);
                         break;
                     case ("play"):
                         joinHelper(input);
@@ -212,6 +167,66 @@ public class ClientMain {
             renderType = RenderType.OBSERVE;
         }
     }
-
-
+    private static void loginHelper(String[] input){
+        try {
+            if (facade.login(input)) {
+                userState = States.LOGGED_IN;
+                activeUser = input[1];
+            }
+        } catch (Exception e) {
+            System.out.println("Server Error. Please restart.");
+        }
+    }
+    private static void registerHelper(String[] input){
+        try {
+            if (facade.register(input)) {
+                userState = States.LOGGED_IN;
+            }
+        } catch (Exception e) {
+            System.out.println("Server Error. Please restart.");
+        }
+    }
+    private static void quitHelper(String[] input) throws IOException {
+        System.out.println("Are you sure you would like to quit? [Yes | No]");
+        String in = readInput()[0];
+        if (Objects.equals(in, "confirm")) {
+            if (userState == States.LOGGED_IN) {
+                try {
+                    if (facade.logout()) {
+                        userState = States.NO_LOGIN;
+                        System.out.println("Goodbye!");
+                        System.exit(0);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Server Error. Please restart.");
+                }
+            } else {
+                System.out.println("Goodbye!");
+                System.exit(0);
+            }
+        }
+    }
+    private static void logoutHelper(String[] input){
+        try {
+            if (facade.logout()) {
+                userState = States.NO_LOGIN;
+            }
+        } catch (Exception e) {
+            System.out.println("Server Error. Please restart.");
+        }
+    }
+    private static void createHelper(String[] input) {
+        try {
+            facade.create(input);
+        } catch (Exception e) {
+            System.out.println("Server Error. Please restart.");
+        }
+    }
+    private static void listHelper(String[] input) {
+        try {
+            renderer.list(facade.list());
+        } catch (Exception e) {
+            System.out.println("Server Error. Please restart.");
+        }
+    }
 }
