@@ -195,23 +195,23 @@ public class ServerFacade {
         return false;
     }
 
-    public boolean leave(String[] args) {
-        try{
-            JoinRequestData leaveRequest = new JoinRequestData(Integer.parseInt(args[1]), args[2], null);
-            if (joinOrLeave(leaveRequest)) {
-                joinedGame = null;
-                return true;
-            } else {
-                return false;
-            }
-        } catch (NumberFormatException n) {
-            System.out.println("Invalid game ID. Try again.");
-            return false;
-        } catch (Exception e) {
-            System.out.println("Server Error. Try again.");
-        }
-        return false;
-    }
+//    public boolean leave(String[] args) {
+//        try{
+//            JoinRequestData leaveRequest = new JoinRequestData(Integer.parseInt(args[1]), args[2], null);
+//            if (joinOrLeave(leaveRequest)) {
+//                joinedGame = null;
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        } catch (NumberFormatException n) {
+//            System.out.println("Invalid game ID. Try again.");
+//            return false;
+//        } catch (Exception e) {
+//            System.out.println("Server Error. Try again.");
+//        }
+//        return false;
+//    }
 
 
 // ---------- helpers ----------

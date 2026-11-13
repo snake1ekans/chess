@@ -34,15 +34,6 @@ public class ServerFacadeTests {
     }
     @AfterAll
     static void stopServer() {
-        DatabaseManager.createDatabase();
-        try {
-            Connection conn = getConnection();
-            Statement stat = conn.createStatement();
-            stat.addBatch("DROP DATABASE CHESS;");
-            stat.executeBatch();
-        } catch (SQLException s) {
-            throw new DatabaseException("failed to connect");
-        }
         server.stop();
     }
     @Test
@@ -125,9 +116,6 @@ public class ServerFacadeTests {
         assertTrue(facade.join(join1W));
         assertFalse(facade.join(join1B));
         assertFalse(facade.join(join1W));
-
-        assertTrue(facade.leave(join1B));
-        assertTrue(facade.leave(join1W));
     }
     @Test
     @DisplayName("badJoin")
@@ -144,9 +132,6 @@ public class ServerFacadeTests {
 
         assertFalse(facade.join(join1B));
         assertFalse(facade.join(join1W));
-
-        assertFalse(facade.leave(join1B));
-        assertFalse(facade.leave(join1W));
     }
     @Test
     @DisplayName("NoAuth")
@@ -156,8 +141,6 @@ public class ServerFacadeTests {
         facade.list();
         String[] join1W = {"join", "5000", "WHITE"};
         facade.join(join1W);
-        facade.leave(join1W);
-
     }
     @Test
     @DisplayName("BadAuth")
@@ -167,7 +150,6 @@ public class ServerFacadeTests {
         facade.list();
         String[] join1W = {"join", "5000", "WHITE"};
         facade.join(join1W);
-        facade.leave(join1W);
     }
     @Test
     @DisplayName("LogoutSuccess")

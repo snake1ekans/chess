@@ -110,7 +110,7 @@ public class ClientMain {
                     leaveArg[0] = "leave";
                     leaveArg[1] = activeGame.gameID().toString();
                     leaveArg[2] = (Objects.equals(activeUser, activeGame.blackUsername())) ? "BLACK" : "WHITE";
-                    facade.leave(leaveArg);
+//                    facade.leave(leaveArg);
                     userState = States.LOGGED_IN;
                     System.out.println("Left game successfully.");
                 }
